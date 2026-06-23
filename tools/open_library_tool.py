@@ -8,6 +8,8 @@ def get_books(query):
 
     url = f"https://openlibrary.org/search.json?q={query}"
 
+    print(url)
+
     try:
         response = requests.get(url)
 
