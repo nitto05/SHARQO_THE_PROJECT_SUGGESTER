@@ -2,7 +2,7 @@
 
 from tools.open_library_tool import get_books
 
-query = input("machine learning")
+query = "machine learning"
 
 book_data = get_books(query)
 
