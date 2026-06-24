@@ -1,3 +1,16 @@
+import os
+import sys
+
+tools_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "dataset"
+    )
+)
+
+sys.path.insert(0, tools_dir)
+
 import pandas as pd
 from collections import Counter ##### why counter...
 import matplotlib.pyplot as plt
