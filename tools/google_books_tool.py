@@ -13,7 +13,7 @@ utils_dir = os.path.abspath(
 sys.path.insert(0, utils_dir)
 from api_keys import get_api_key
 
-base_url = "https://www.googleapis.com/books/v1/volumes" 
+# base_url = "https://www.googleapis.com/books/v1/volumes" 
 
 api_key = get_api_key("GOOGLE_BOOKS")
 
