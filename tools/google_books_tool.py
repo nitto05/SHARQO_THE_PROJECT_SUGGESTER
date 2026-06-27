@@ -1,21 +1,29 @@
 import requests
+# import os
+# import sys
+
+# utils_dir = os.path.abspath(
+#     os.path.join(
+#         os.path.dirname(__file__),
+#         "..",
+#         "utils"
+#     )
+# )
+
+# sys.path.insert(0, utils_dir)
+# from api_keys import get_api_key
+
+from dotenv import load_dotenv
 import os
-import sys
 
-utils_dir = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        "..",
-        "utils"
-    )
-)
+load_dotenv()   # Loads variables from .env
 
-sys.path.insert(0, utils_dir)
-from api_keys import get_api_key
+# youtube_key = os.getenv("YOUTUBE_API_KEY")
+api_key = os.getenv("GOOGLE_BOOKS")
 
 # base_url = "https://www.googleapis.com/books/v1/volumes" 
 
-api_key = get_api_key("GOOGLE_BOOKS")
+# api_key = get_api_key("GOOGLE_BOOKS")
 
 base_url = "https://www.googleapis.com/books/v1/volumes"
 
