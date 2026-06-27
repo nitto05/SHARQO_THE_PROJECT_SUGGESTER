@@ -4,6 +4,16 @@ from tools.github_tool import get_repositories
 from tools.arxiv_tool import get_papers
 from tools.crossref_tool import get_crossref_papers
 from tools.pubmed_tool import get_pubmed_papers
+from dotenv import load_dotenv
+import os
+
+load_dotenv()   # Loads variables from .env
+
+# youtube_key = os.getenv("YOUTUBE_API_KEY")
+gemini_key = os.getenv("GEMINI_API_KEY")
+
+# print(youtube_key)
+# print(gemini_key)
 
 #sample input : I want to learn RAG using projects, research papers and journal articles
 
@@ -457,7 +467,7 @@ from tools.pubmed_tool import get_pubmed_papers
 # completed in 24.33681869506836 seconds
 # """
 
-client = genai.Client (api_key = "AQ.Ab8RN6LH84vj_fFBjgtDsdiSsi8lYJ4vtVmSqViPIFDi4rJrCg")
+client = genai.Client (api_key = gemini_key)
 
 
 goal = input("what do you need??? : ")
