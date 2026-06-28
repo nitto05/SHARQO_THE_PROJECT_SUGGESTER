@@ -486,6 +486,17 @@ start = time.time()
 
 # that's it...
 # """
+tool_registry = os.getenv("TOOL_REGISTRY")
+
+idRules = ""
+
+for tools in tool_registry:
+    text = f"- Return {tools} if the user is looking for:\n"
+    idRules += text
+    for rules in tool_registry[tools]["id_rules"]:
+        idRules +=  f"- {rules} \n"
+    idRules += f"\n"    
+
 
 prompt = f"""
 User request:
@@ -494,40 +505,7 @@ User request:
 
 Rules:
 
-- Return GITHUB if the user is looking for:
-  - projects
-  - repositories
-  - source code
-  - implementation examples
-  - learning by building
-  - open-source tools
-
-- Return ARXIV if the user is looking for:
-  - research papers
-  - academic publications
-  - surveys
-  - thesis topics
-  - scientific literature
-  - state-of-the-art research
-
-- Return CROSSREF if the user mentions:
-  - journal articles
-  - journal papers
-  - conference papers
-  - citations
-  - DOI information
-  - scholarly publications
-
-- Return PUBMED if the user is looking for:
-  - medicine
-  - healthcare
-  - biology
-  - biomedical research
-  - clinical studies
-  - diseases
-  - drugs
-  - genetics
-  - public health
+{idRules}
 
 Query Generation Rules:
 
