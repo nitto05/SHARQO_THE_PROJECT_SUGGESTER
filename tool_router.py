@@ -1,9 +1,13 @@
 import time
+import json
+import importlib
+# import os
 from google import genai
-from tools.github_tool import get_repositories
-from tools.arxiv_tool import get_papers
-from tools.crossref_tool import get_crossref_papers
-from tools.pubmed_tool import get_pubmed_papers
+# from tools.github_tool import get_repositories
+# from tools.arxiv_tool import get_papers
+# from tools.crossref_tool import get_crossref_papers
+# from tools.pubmed_tool import get_pubmed_papers
+from tool_manager import get_rules, get_search_rules, get_file, get_func
 from dotenv import load_dotenv
 import os
 
@@ -472,30 +476,7 @@ client = genai.Client (api_key = gemini_key)
 
 goal = input("what do you need??? : ")
 start = time.time()
-
-# prompt = f""" 
-# A user wants : {goal}
-
-# if goal can be solved using github repos and all the stuff related to it... 
-
-# then give output : "GITHUB" 
-
-# else if the user wants to get data for research paper and stuff related to science and thesis...
-
-# then give output : "OPENALEX"
-
-# that's it...
-# """
-tool_registry = os.getenv("TOOL_REGISTRY")
-
-idRules = ""
-
-for tools in tool_registry:
-    text = f"- Return {tools} if the user is looking for:\n"
-    idRules += text
-    for rules in tool_registry[tools]["id_rules"]:
-        idRules +=  f"- {rules} \n"
-    idRules += f"\n"    
+    
 
 
 prompt = f"""
@@ -505,29 +486,11 @@ User request:
 
 Rules:
 
-{idRules}
+{get_rules()}
 
 Query Generation Rules:
 
-GITHUB_QUERY:
-Convert the following request into a GitHub repository search query.
-Focus on repositories, frameworks, implementations and open-source projects.
-Return only the search query.
-
-ARXIV_QUERY:
-Convert the user's request into a good arXiv search query.
-Focus on research topics, surveys and academic terminology.
-Return only the search query.
-
-CROSSREF_QUERY:
-Convert the user's request into a good Crossref search query.
-Focus on journal papers, conference papers and scholarly terminology.
-Return only the search query.
-
-PUBMED_QUERY:
-Convert the user's request into a good PubMed search query.
-Focus on medicine, healthcare, biology and biomedical terminology.
-Return only the search query.
+{get_search_rules()}
 
 
 Rules:
@@ -539,24 +502,9 @@ Rules:
 - Do not explain.
 - Do not add extra text.
 
-Output EXACTLY in this format:
+Output a dictionary where the keys are the selected tools and the value for each key is query for that specific tool:
 
-TOOLS: tool1,tool2,...
 
-Then ONLY output query lines for the selected tools.
-
-Example:
-
-TOOLS: ARXIV,CROSSREF
-
-ARXIV_QUERY: machine learning
-CROSSREF_QUERY: machine learning
-
-Do NOT output GITHUB_QUERY if GITHUB is not selected.
-Do NOT output PUBMED_QUERY if PUBMED is not selected.
-and similarly if any tools is not selected, do not give their query lines...
-
-Only include query lines for selected tools.
 """
 
 # prompt = f"""
@@ -607,98 +555,122 @@ response = client.models.generate_content(
 print("Raw Gemini Output:")
 print(response.text)
 
-lines = response.text.strip().split("\n")
+# lines = response.text.strip().split("\n")
 
-tools_line = ""
-# query_line = ""
-queries = {}
+# tools_line = ""
+# # query_line = ""
+# queries = {}
 
-for line in lines:
-    line = line.strip()
+# for line in lines:
+#     line = line.strip()
 
-    if line.startswith("TOOLS:"):
-        tools_line = line
-    elif "_QUERY:" in line:
-        # query_line = line
-        key, value = line.split(":", 1)
+#     if line.startswith("TOOLS:"):
+#         tools_line = line
+#     elif "_QUERY:" in line:
+#         # query_line = line
+#         key, value = line.split(":", 1)
 
-        queries[key.strip()] = value.strip() 
+#         queries[key.strip()] = value.strip() 
 
-tools_text = tools_line.split(":", 1)[1]
-choices = [
-    tool.strip().upper()
-    # for choice in response.text.split(",")
+# tools_text = tools_line.split(":", 1)[1]
+# choices = [
+#     tool.strip().upper()
+#     # for choice in response.text.split(",")
 
-    for tool in tools_text.split(",")
+#     for tool in tools_text.split(",")
 
-] # gathers all the choices made by the agent
+# ] # gathers all the choices made by the agent
 
-# search_query = query_line.replace("QUERY:", "").strip()
+# # search_query = query_line.replace("QUERY:", "").strip()
 
 ########## this dictionary should be stored in database...
 
+tool_quer = json.loads(response.text)
+
+choices = tool_quer.keys()
+queries = list()
+
+for tool, query in tool_quer.items():
+    print(tool, query)
 
 
-print("Detected Tools: ", choices)
-print("Search Query: ", queries)
 
 all_data = {}
 
-if "GITHUB" in choices and "GITHUB_QUERY" in queries:
+
+###########
+for tool in tool_quer:
+    
+    module_name = "tools." + get_file(tool)
+    module = importlib.import_module(module_name)
+    function = getattr(module, get_func(tool))
+    all_data [tool]= function(tool_quer[tool]) + "\n\n"
+
+
+
+
+
+
+
+
+# if "GITHUB" in choices and "GITHUB_QUERY" in queries:
 
     
 
-    print("Searching GitHub...")
-    repo_data = get_repositories(queries["GITHUB_QUERY"])
+#     print("Searching GitHub...")
+#     repo_data = get_repositories(queries["GITHUB_QUERY"])
 
-    # print(repo_data)
-    # all_data += "\n\n === GITHUB === \n\n"
-    # all_data += repo_data
-    all_data["GITHUB"] = repo_data
+#     # print(repo_data)
+#     # all_data += "\n\n === GITHUB === \n\n"
+#     # all_data += repo_data
+#     all_data["GITHUB"] = repo_data
 
-if "ARXIV" in choices and "ARXIV_QUERY" in queries:
-
-    
-    
-    print("Searching Arxiv...")
-    arxiv_data = get_papers(queries["ARXIV_QUERY"])
-
-    # print(paper_data)
-    # all_data += "\n\n === ARXIV === \n\n"
-    # all_data += paper_data
-    all_data["ARXIV"] = arxiv_data
+# if "ARXIV" in choices and "ARXIV_QUERY" in queries:
 
     
-if "CROSSREF" in choices and "CROSSREF_QUERY" in queries:
+    
+#     print("Searching Arxiv...")
+#     arxiv_data = get_papers(queries["ARXIV_QUERY"])
+
+#     # print(paper_data)
+#     # all_data += "\n\n === ARXIV === \n\n"
+#     # all_data += paper_data
+#     all_data["ARXIV"] = arxiv_data
 
     
-
-    print("Searching Crossref...")
-    crossref_data = get_crossref_papers(queries["CROSSREF_QUERY"])
-
-    # print(crossref_data)
-    # all_data += "\n\n === CROSSREF === \n\n"
-    # all_data += crossref_data
-    all_data["CROSSREF"] = crossref_data
-
-if "PUBMED" in choices and "PUBMED_QUERY" in queries:
+# if "CROSSREF" in choices and "CROSSREF_QUERY" in queries:
 
     
 
-    print("Searching PubMed...")
-    pubmed_data = get_pubmed_papers(queries["PUBMED_QUERY"])
+#     print("Searching Crossref...")
+#     crossref_data = get_crossref_papers(queries["CROSSREF_QUERY"])
 
-    # print(pubmed_data)
-    # "\n\n === PUBMED === \n\n"
-    # all_data += pubmed_data
-    all_data["PUBMED"] = pubmed_data
+#     # print(crossref_data)
+#     # all_data += "\n\n === CROSSREF === \n\n"
+#     # all_data += crossref_data
+#     all_data["CROSSREF"] = crossref_data
 
-# print(all_data)
-for source, results in all_data.items():
-    # formatted_data += f"\n\n ==== {source} ==== \n\n"
-    # formatted_data += results
-    print(f"\n\n ==== {source} ====\n\n")
-    print(results)
+# if "PUBMED" in choices and "PUBMED_QUERY" in queries:
+
+    
+
+#     print("Searching PubMed...")
+#     pubmed_data = get_pubmed_papers(queries["PUBMED_QUERY"])
+
+#     # print(pubmed_data)
+#     # "\n\n === PUBMED === \n\n"
+#     # all_data += pubmed_data
+#     all_data["PUBMED"] = pubmed_data
+
+# # print(all_data)
+# for source, results in all_data.items():
+#     # formatted_data += f"\n\n ==== {source} ==== \n\n"
+#     # formatted_data += results
+#     print(f"\n\n ==== {source} ====\n\n")
+#     print(results)
+
+
+
 
 print("\nGenerating analysis...\n")
 

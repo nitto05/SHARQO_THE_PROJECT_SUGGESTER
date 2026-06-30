@@ -26,11 +26,11 @@ def get_rules():
             idRules += f"\n"
     return idRules
 
-def get_search_rules(selection): #selection is a list of valid tools
+def get_search_rules(): #selection is a list of valid tools
     
     search_rules = dict()
 
-    for tools in selection:
+    for tools in tool_registry:
         rule = tool_registry[tools]["search_rules"]
         search_rules[tools] = rule
     return search_rules
@@ -42,6 +42,6 @@ def get_func (tool):
     return tool_registry[tool]["function_name"]
 
 print(get_rules())
-print(get_search_rules(["GITHUB", "ARXIV"]))
+print(get_search_rules())
 print(get_file("GITHUB"))
 print(get_func("GITHUB"))
