@@ -17,7 +17,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "github_tool.py",
+    "file_name": "github_tool",
 
     "function_name": "get_repositories"
 },
@@ -39,7 +39,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "arxiv_tool.py",
+    "file_name": "arxiv_tool",
 
     "function_name": "get_papers"
 },
@@ -61,7 +61,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "crossref_tool.py",
+    "file_name": "crossref_tool",
 
     "function_name": "get_crossref_papers"
 },
@@ -86,7 +86,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "pubmed_tool.py",
+    "file_name": "pubmed_tool",
 
     "function_name": "get_pubmed_papers"
 },
@@ -121,7 +121,7 @@ TOOL_REGISTRY = {
         "Return only the output."
     ),
 
-    "file_name": "poetry_tool.py",
+    "file_name": "poetry_tool",
 
     "function_name": "get_poems"
 },
@@ -150,7 +150,7 @@ TOOL_REGISTRY = {
         "Return ONLY the query."
     ),
 
-    "file_name": "open_library_tool.py",
+    "file_name": "open_library_tool",
 
     "function_name": "get_books"
 },
@@ -174,7 +174,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "google_books_tool.py",
+    "file_name": "google_books_tool",
 
     "function_name": "get_google_books"
 },
@@ -199,7 +199,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "youtube_tool.py",
+    "file_name": "youtube_tool",
 
     "function_name": "get_youtube_videos"
 },
@@ -224,7 +224,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "alpha_vantage_tool.py",
+    "file_name": "alpha_vantage_tool",
 
     "function_name": "get_market_data"
 },
@@ -249,7 +249,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "news_tool.py",
+    "file_name": "news_tool",
 
     "function_name": "get_news"
 },
@@ -275,7 +275,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "rawg_tool.py",
+    "file_name": "rawg_tool",
 
     "function_name": "get_games"
 },
@@ -301,7 +301,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "football_tool.py",
+    "file_name": "football_tool",
 
     "function_name": "get_football_data"
 },
@@ -328,7 +328,7 @@ TOOL_REGISTRY = {
         "Return only the search query."
     ),
 
-    "file_name": "wger_tool.py",
+    "file_name": "wger_tool",
 
     "function_name": "get_workouts"
 }
