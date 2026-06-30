@@ -21,8 +21,8 @@ def get_youtube_videos(query):
         "key" : api_key
     }
 
-    print(base_url)
-    print(params)
+    # print(base_url)
+    # print(params)
 
     try:
 

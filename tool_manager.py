@@ -41,7 +41,7 @@ def get_file (tool):
 def get_func (tool):
     return tool_registry[tool]["function_name"]
 
-print(get_rules())
-print(get_search_rules())
-print(get_file("GITHUB"))
-print(get_func("GITHUB"))
+# print(get_rules())
+# print(get_search_rules())
+# print(get_file("GITHUB"))
+# print(get_func("GITHUB"))
