@@ -38,8 +38,8 @@ def get_google_books(query, max_results = 10):
         "key" : api_key
     }
 
-    print(base_url)
-    print(params)
+    # print(base_url)
+    # print(params)
 
     try: 
 
