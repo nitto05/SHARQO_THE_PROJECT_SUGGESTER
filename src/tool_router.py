@@ -10,6 +10,11 @@ from google import genai
 from tool_manager import get_rules, get_search_rules, get_file, get_func
 from dotenv import load_dotenv
 import os
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT))
 
 load_dotenv()   # Loads variables from .env
 
@@ -175,7 +180,12 @@ for tool, query in tool_quer.items():
     module = importlib.import_module(module_name)
     function = getattr(module, get_func(tool))
 
-    result = function(query)
+    # result = function(query)
+    params = tool_quer[tool]
+    if isinstance(params, dict):
+        result = function(**params)
+    else : 
+        result = function(params)
 
     print(f"{tool} finished.")
     print(f"Result length: {len(result)}")

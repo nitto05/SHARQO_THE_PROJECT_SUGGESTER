@@ -1,6 +1,6 @@
 import requests
 
-def get_poems(query, fields = ["lines"]):
+def get_poems(query, fields = ["lines"], limit = 5):
     # query = ";".join(keyword.strip() for keyword in query.split(","))
     field_string = ",".join(fields)
     url = (
@@ -27,7 +27,7 @@ def get_poems(query, fields = ["lines"]):
     seen = set()
     poem_data = ""
 
-    for poem in data : 
+    for poem in data [:limit]: 
         identifier = (poem["title"], poem["author"])
 
         if identifier in seen :
