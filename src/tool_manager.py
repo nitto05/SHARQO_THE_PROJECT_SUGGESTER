@@ -8,7 +8,20 @@
 # # gemini_key = os.getenv("GEMINI_API_KEY")
 
 # tool_registry = json.loads(os.getenv("TOOL_REGISTRY"))
-from config.tool_reg import TOOL_REGISTRY
+import os
+import sys
+
+config_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "config"
+    )
+)
+
+sys.path.insert(0, config_dir)
+
+from tool_reg import TOOL_REGISTRY
 
 tool_registry = TOOL_REGISTRY
 

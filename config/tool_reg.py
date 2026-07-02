@@ -106,22 +106,15 @@ TOOL_REGISTRY = {
     },
 
     "search_rules": (
-        "Convert the following request into a PoetryDB search specification.\n\n"
-        "Determine:\n\n"
-        "1. Which fields should be searched.\n"
-        "Possible fields are:\n"
-        "- author\n"
-        "- title\n"
-        "- lines\n\n"
-        "2. Generate the corresponding query values.\n"
-        "Use semicolons (;) to separate multiple values.\n\n"
-        "Output EXACTLY in this format:\n\n"
-        "FIELDS: field1,field2,...\n\n"
-        "QUERY: value1;value2;...\n\n"
-        "Return only the output."
+    "Return a JSON object with the following format:\n"
+    '{'
+    '"query": "<search text>",'
+    '"fields": ["lines"]'
+    '}\n'
+    "Do not return anything else."
     ),
 
-    "file_name": "poetry_tool",
+    "file_name": "poetrydb_tool",
 
     "function_name": "get_poems"
 },
