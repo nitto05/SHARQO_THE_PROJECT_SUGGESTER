@@ -29,7 +29,7 @@ gemini_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client (api_key = gemini_key)
 
 
-goal = input("what do you need??? : ")
+# goal = input("what do you need??? : ")
 start = time.time()
     
 
