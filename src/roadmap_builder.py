@@ -152,6 +152,90 @@ def get_inp():
     time = details ["time"]
     
 
+    try : 
+        time_limit = int(time)
+    except ValueError:
+        time_limit = 4
+    
+    if(time_limit < 4):
+        phases_structure = """
+        """
+    module_template = """{
+                    "module_id": "...",
+                    "name": "...",
+                    "description": "...",
+                    "phase": 1,
+                    "priority": 1,
+                    "type": "...",
+                    "critical": true,
+                    "complexity": "...",
+                    "depends_on": [],
+                    "interfaces": {
+                        "consumes": [],
+                        "produces": []
+                    },
+                    "responsibilities": [],
+                    "inputs": [],
+                    "outputs": [],
+                    "state": {
+                        "owner": "...",
+                        "lifetime": "...",
+                        "location": "...",
+                        "persistence": "..."
+                    },
+                    "capabilities": []
+                }"""
+    if time_limit < 4:
+        phases_structure = f"""
+        [
+            {{
+                "phase_number" : 1,
+                "description" : "...",
+                "modules" :  [{module_template}]
+            }}
+        ]
+        """
+    else :
+        module_template_p2 = module_template.replace('"phase" : 1', '"phase" : 2').replace('"critical" : true', '"critical" : false')
+        phase_structure = f"""[
+
+            {{
+                "phase_number" : 1,
+                "description" : "...",
+                "modules" : [{module_template}]
+            }},
+            {{
+                "phase_number" : 2,
+                "description" : "...",
+                "modules" : [{module_template_p2}]
+            }}
+        ]
+            
+        """
+
+        output_format = f"""{{
+        
+        "project_name" : "..."
+        "architecture_version" : "..."
+        "design_philosophy" : "..."
+        "phases" : {phases_structure},
+        "unified_data_contract" : {{
+            "name" : "...",
+            "description" : "...",
+            "fields" : [
+            {{
+                "name" : "...",
+                "type" : "...",
+                "description" : "...",
+                "required" : true,
+                "nullable" : false,
+                "example" : "..."
+            }}
+            ]
+
+        }}
+    }}
+        """
     prompt = f"""
 
 You are an expert Principal Software Architect, Systems Design Engineer, and Technical Consultant.
