@@ -157,9 +157,7 @@ def get_inp():
     except ValueError:
         time_limit = 4
     
-    if(time_limit < 4):
-        phases_structure = """
-        """
+    
     module_template = """{
                     "module_id": "...",
                     "name": "...",
@@ -186,50 +184,50 @@ def get_inp():
                     "capabilities": []
                 }"""
     if time_limit < 4:
-        phases_structure = f"""
+        phase_structure = f"""
         [
             {{
-                "phase_number" : 1,
-                "description" : "...",
-                "modules" :  [{module_template}]
+                "phase_number": 1,
+                "description": "...",
+                "modules":  [{module_template}]
             }}
         ]
         """
     else :
-        module_template_p2 = module_template.replace('"phase" : 1', '"phase" : 2').replace('"critical" : true', '"critical" : false')
+        module_template_p2 = module_template.replace('"phase": 1', '"phase": 2').replace('"critical": true', '"critical": false')
         phase_structure = f"""[
 
             {{
-                "phase_number" : 1,
-                "description" : "...",
-                "modules" : [{module_template}]
+                "phase_number": 1,
+                "description": "...",
+                "modules": [{module_template}]
             }},
             {{
-                "phase_number" : 2,
-                "description" : "...",
-                "modules" : [{module_template_p2}]
+                "phase_number": 2,
+                "description": "...",
+                "modules": [{module_template_p2}]
             }}
         ]
             
         """
 
-        output_format = f"""{{
+    output_format = f"""{{
         
-        "project_name" : "..."
-        "architecture_version" : "..."
-        "design_philosophy" : "..."
-        "phases" : {phases_structure},
-        "unified_data_contract" : {{
-            "name" : "...",
-            "description" : "...",
-            "fields" : [
+        "project_name": "...",
+        "architecture_version": "...",
+        "design_philosophy": "...",
+        "phases": {phase_structure},
+        "unified_data_contract": {{
+            "name": "...",
+            "description": "...",
+            "fields": [
             {{
-                "name" : "...",
-                "type" : "...",
-                "description" : "...",
-                "required" : true,
-                "nullable" : false,
-                "example" : "..."
+                "name": "...",
+                "type": "...",
+                "description": "...",
+                "required": true,
+                "nullable": false,
+                "example": "..."
             }}
             ]
 
@@ -355,115 +353,10 @@ Next.js
 
 OpenAI
 
---------------------------------------------------
-MODULE DESIGN REQUIREMENTS
---------------------------------------------------
 
-Every module MUST contain the following fields:
 
-{{
-    "module_id": "...",
 
-    "name": "...",
 
-    "description": "...",
-
-    "phase": 1,
-
-    "priority": 1,
-
-    "type": "...",
-
-    "critical": true,
-
-    "complexity": "...",
-
-    "depends_on": [],
-
-    "interfaces": {{
-        "consumes": [],
-        "produces": []
-    }},
-
-    "responsibilities": [],
-
-    "inputs": [],
-
-    "outputs": [],
-
-    "state": {{
-        "owner": "...",
-        "lifetime": "...",
-        "location": "...",
-        "persistence": "..."
-    }},
-
-    "capabilities": []
-}}
-
-Definitions:
-
-• Critical indicates whether the module is required for a functional MVP.
-
-• Priority represents the recommended implementation order within its phase.
-
-• Complexity refers to implementation effort and architectural sophistication rather than computational complexity.
-
-• Dependencies represent logical execution or communication dependencies between architectural components, never implementation dependencies.
-
-• Capabilities describe reusable architectural capabilities provided by the module, independent of any implementation technology.
-
-• Interfaces describe the explicit communication contract between architectural modules.
-
-Prefer fewer, well-defined architectural components over many narrowly scoped components unless additional decomposition is clearly justified by the project requirements.
-
---------------------------------------------------
-UNIFIED DATA CONTRACT
---------------------------------------------------
-
-Design one unified application data contract.
-
-The unified data contract must:
-
-• Be produced during Phase 1.
-• Remain unchanged throughout later phases.
-• Serve as the communication contract between all architectural modules.
-• Be directly suitable for persistent storage.
-• Avoid translation layers between architectural phases.
-• Represent the canonical application model rather than a database schema.
-
-Do NOT include implementation-specific storage details such as database identifiers, storage paths, or persistence metadata unless they are part of the application's domain model.
-
-For every field specify:
-
-• name
-• type
-• description
-• required
-• nullable
-• example
-
-Use consistent naming conventions:
-
-• Module identifiers → snake_case
-• Human-readable names → Title Case
-• Data contract fields → camelCase
-
---------------------------------------------------
-ARCHITECTURAL VALIDATION
---------------------------------------------------
-
-Before producing the final JSON, verify that:
-
-• Every module belongs to exactly one phase.
-• Every dependency references an existing module.
-• Every consumed input is produced by another module or originates from the user.
-• Every output is consumed by another module or represents a final application output.
-• No duplicate responsibilities exist across modules.
-• Every module has a clearly defined architectural boundary.
-• Every module communicates only through declared interfaces.
-• The unified data contract is sufficient for communication between every module.
-• The architecture is internally consistent.
 
 --------------------------------------------------
 OUTPUT REQUIREMENTS
@@ -501,17 +394,77 @@ Your entire response must be a single valid JSON object.
 
 The JSON MUST contain:
 
-{{
-    "project_name": "...",
+{output_format}
 
-    "architecture_version": "...",
+--------------------------------------------------
+MODULE DESIGN REQUIREMENTS
+--------------------------------------------------
 
-    "design_philosophy": "...",
+{module_template}
 
-    "phases": [...],
+Definitions:
 
-    "unified_data_contract": {{...}}
-}}
+• Critical indicates whether the module is required for a functional MVP.
+
+• Priority represents the recommended implementation order within its phase.
+
+• Complexity refers to implementation effort and architectural sophistication rather than computational complexity.
+
+• Dependencies represent logical execution or communication dependencies between architectural components, never implementation dependencies.
+
+• Capabilities describe reusable architectural capabilities provided by the module, independent of any implementation technology.
+
+• Interfaces describe the explicit communication contract between architectural modules.
+
+Prefer fewer, well-defined architectural components over many narrowly scoped components unless additional decomposition is clearly justified by the project requirements.
+
+--------------------------------------------------
+ARCHITECTURAL VALIDATION
+--------------------------------------------------
+
+Before producing the final JSON, verify that:
+
+• Every module belongs to exactly one phase.
+• Every dependency references an existing module.
+• Every consumed input is produced by another module or originates from the user.
+• Every output is consumed by another module or represents a final application output.
+• No duplicate responsibilities exist across modules.
+• Every module has a clearly defined architectural boundary.
+• Every module communicates only through declared interfaces.
+• The unified data contract is sufficient for communication between every module.
+• The architecture is internally consistent.
+
+--------------------------------------------------
+UNIFIED DATA CONTRACT
+--------------------------------------------------
+
+Design one unified application data contract.
+
+The unified data contract must:
+
+• Be produced during Phase 1.
+• Remain unchanged throughout later phases.
+• Serve as the communication contract between all architectural modules.
+• Be directly suitable for persistent storage.
+• Avoid translation layers between architectural phases.
+• Represent the canonical application model rather than a database schema.
+
+Do NOT include implementation-specific storage details such as database identifiers, storage paths, or persistence metadata unless they are part of the application's domain model.
+
+For every field specify:
+
+• name
+• type
+• description
+• required
+• nullable
+• example
+
+Use consistent naming conventions:
+
+• Module identifiers → snake_case
+• Human-readable names → Title Case
+• Data contract fields → camelCase
 
 """
     response = client.models.generate_content(
