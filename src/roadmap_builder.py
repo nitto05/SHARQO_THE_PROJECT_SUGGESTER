@@ -354,48 +354,6 @@ Next.js
 OpenAI
 
 
-
-
-
-
---------------------------------------------------
-OUTPUT REQUIREMENTS
---------------------------------------------------
-
-Assume this document will serve as the canonical architectural specification for all subsequent planning stages, including:
-
-• Technology Selection
-• Concept Identification
-• Database Design
-• Folder Structure Generation
-• API Planning
-• Testing Strategy
-• Deployment Planning
-• Infrastructure Planning
-• Code Generation
-
-Return ONLY one valid JSON object.
-
-Do NOT use Markdown.
-
-Do NOT explain your reasoning.
-
-Do NOT output any text outside the JSON.
-
-Do NOT wrap the JSON inside triple backticks.
-
-Do NOT output ```json or ```.
-
-The first character of your response MUST be {{
-
-The last character of your response MUST be }}
-
-Your entire response must be a single valid JSON object.
-
-The JSON MUST contain:
-
-{output_format}
-
 --------------------------------------------------
 MODULE DESIGN REQUIREMENTS
 --------------------------------------------------
@@ -433,6 +391,8 @@ Before producing the final JSON, verify that:
 • Every module communicates only through declared interfaces.
 • The unified data contract is sufficient for communication between every module.
 • The architecture is internally consistent.
+• The final JSON payload has zero duplicate keys and completely valid, parseable JSON syntax.
+
 
 --------------------------------------------------
 UNIFIED DATA CONTRACT
@@ -466,6 +426,49 @@ Use consistent naming conventions:
 • Human-readable names → Title Case
 • Data contract fields → camelCase
 
+--------------------------------------------------
+OUTPUT REQUIREMENTS
+--------------------------------------------------
+
+Assume this document will serve as the canonical architectural specification for all subsequent planning stages, including:
+
+• Technology Selection
+• Concept Identification
+• Database Design
+• Folder Structure Generation
+• API Planning
+• Testing Strategy
+• Deployment Planning
+• Infrastructure Planning
+• Code Generation
+
+Return ONLY one valid JSON object.
+
+Do NOT use Markdown.
+
+Do NOT explain your reasoning.
+
+Do NOT output any text outside the JSON.
+
+Do NOT wrap the JSON inside triple backticks.
+
+Do NOT output ```json or ```.
+
+The first character of your response MUST be {{
+
+The last character of your response MUST be }}
+
+Your entire response must be a single valid JSON object.
+
+JSON QUALITY & CONCISENESS RULES:
+• Keep descriptions for all modules and fields concise to prevent truncation or generation drift.
+• Ensure every key in the JSON is unique; do NOT duplicate, merge, or repeat keys (like 'userRole' or 'userName').
+• Do NOT repeat the field definitions inside 'unified_data_contract.fields'. Every field must be declared exactly once.
+
+The JSON MUST contain:
+
+{output_format}
+
 """
     response = client.models.generate_content(
         # model="gemini-2.5-flash",
@@ -476,10 +479,31 @@ Use consistent naming conventions:
         
     )
 
-    print("Raw Gemini Output:")
-    print(response.text)
+    # print("Raw Gemini Output:")
+    # print(response.text)
 
-get_inp()
+    return response.text
+
+res = get_inp()
+
+res = res.strip()
+
+if res.startswith("```json"):
+    res = res [7:]
+elif res.startswith("```"):
+    res = res[3:]
+if res.endswith("```"):
+    res = res [:-3]
+
+res = res.strip()
+
+try :
+    blueprint_dict = json.loads(res)
+    print("successfully converted json to dict")
+    print(blueprint_dict["project_name"])
+    print(blueprint_dict.keys())
+except json.JSONDecodeError as e:
+    print(f"Failed to parse JSON : {e}")
 
 
 
