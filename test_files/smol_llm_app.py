@@ -1,7 +1,7 @@
 from google import genai
 from tools.github_tool import get_repositories, get_readme
 
-client = genai.Client(api_key="AQ.Ab8RN6LH84vj_fFBjgtDsdiSsi8lYJ4vtVmSqViPIFDi4rJrCg")
+# client = genai.Client(api_key="AQ.Ab8RN6LH84vj_fFBjgtDsdiSsi8lYJ4vtVmSqViPIFDi4rJrCg")
 
 goal = input("waht do you want to learn? : ")
 repo_data = get_repositories (goal)
