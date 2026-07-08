@@ -157,9 +157,7 @@ def get_inp():
     except ValueError:
         time_limit = 4
     
-    if(time_limit < 4):
-        phases_structure = """
-        """
+    
     module_template = """{
                     "module_id": "...",
                     "name": "...",
@@ -186,50 +184,50 @@ def get_inp():
                     "capabilities": []
                 }"""
     if time_limit < 4:
-        phases_structure = f"""
+        phase_structure = f"""
         [
             {{
-                "phase_number" : 1,
-                "description" : "...",
-                "modules" :  [{module_template}]
+                "phase_number": 1,
+                "description": "...",
+                "modules":  [{module_template}]
             }}
         ]
         """
     else :
-        module_template_p2 = module_template.replace('"phase" : 1', '"phase" : 2').replace('"critical" : true', '"critical" : false')
+        module_template_p2 = module_template.replace('"phase": 1', '"phase": 2').replace('"critical": true', '"critical": false')
         phase_structure = f"""[
 
             {{
-                "phase_number" : 1,
-                "description" : "...",
-                "modules" : [{module_template}]
+                "phase_number": 1,
+                "description": "...",
+                "modules": [{module_template}]
             }},
             {{
-                "phase_number" : 2,
-                "description" : "...",
-                "modules" : [{module_template_p2}]
+                "phase_number": 2,
+                "description": "...",
+                "modules": [{module_template_p2}]
             }}
         ]
             
         """
 
-        output_format = f"""{{
+    output_format = f"""{{
         
-        "project_name" : "..."
-        "architecture_version" : "..."
-        "design_philosophy" : "..."
-        "phases" : {phases_structure},
-        "unified_data_contract" : {{
-            "name" : "...",
-            "description" : "...",
-            "fields" : [
+        "project_name": "...",
+        "architecture_version": "...",
+        "design_philosophy": "...",
+        "phases": {phase_structure},
+        "unified_data_contract": {{
+            "name": "...",
+            "description": "...",
+            "fields": [
             {{
-                "name" : "...",
-                "type" : "...",
-                "description" : "...",
-                "required" : true,
-                "nullable" : false,
-                "example" : "..."
+                "name": "...",
+                "type": "...",
+                "description": "...",
+                "required": true,
+                "nullable": false,
+                "example": "..."
             }}
             ]
 
@@ -355,51 +353,12 @@ Next.js
 
 OpenAI
 
+
 --------------------------------------------------
 MODULE DESIGN REQUIREMENTS
 --------------------------------------------------
 
-Every module MUST contain the following fields:
-
-{{
-    "module_id": "...",
-
-    "name": "...",
-
-    "description": "...",
-
-    "phase": 1,
-
-    "priority": 1,
-
-    "type": "...",
-
-    "critical": true,
-
-    "complexity": "...",
-
-    "depends_on": [],
-
-    "interfaces": {{
-        "consumes": [],
-        "produces": []
-    }},
-
-    "responsibilities": [],
-
-    "inputs": [],
-
-    "outputs": [],
-
-    "state": {{
-        "owner": "...",
-        "lifetime": "...",
-        "location": "...",
-        "persistence": "..."
-    }},
-
-    "capabilities": []
-}}
+{module_template}
 
 Definitions:
 
@@ -416,6 +375,24 @@ Definitions:
 • Interfaces describe the explicit communication contract between architectural modules.
 
 Prefer fewer, well-defined architectural components over many narrowly scoped components unless additional decomposition is clearly justified by the project requirements.
+
+--------------------------------------------------
+ARCHITECTURAL VALIDATION
+--------------------------------------------------
+
+Before producing the final JSON, verify that:
+
+• Every module belongs to exactly one phase.
+• Every dependency references an existing module.
+• Every consumed input is produced by another module or originates from the user.
+• Every output is consumed by another module or represents a final application output.
+• No duplicate responsibilities exist across modules.
+• Every module has a clearly defined architectural boundary.
+• Every module communicates only through declared interfaces.
+• The unified data contract is sufficient for communication between every module.
+• The architecture is internally consistent.
+• The final JSON payload has zero duplicate keys and completely valid, parseable JSON syntax.
+
 
 --------------------------------------------------
 UNIFIED DATA CONTRACT
@@ -448,22 +425,6 @@ Use consistent naming conventions:
 • Module identifiers → snake_case
 • Human-readable names → Title Case
 • Data contract fields → camelCase
-
---------------------------------------------------
-ARCHITECTURAL VALIDATION
---------------------------------------------------
-
-Before producing the final JSON, verify that:
-
-• Every module belongs to exactly one phase.
-• Every dependency references an existing module.
-• Every consumed input is produced by another module or originates from the user.
-• Every output is consumed by another module or represents a final application output.
-• No duplicate responsibilities exist across modules.
-• Every module has a clearly defined architectural boundary.
-• Every module communicates only through declared interfaces.
-• The unified data contract is sufficient for communication between every module.
-• The architecture is internally consistent.
 
 --------------------------------------------------
 OUTPUT REQUIREMENTS
@@ -499,19 +460,14 @@ The last character of your response MUST be }}
 
 Your entire response must be a single valid JSON object.
 
+JSON QUALITY & CONCISENESS RULES:
+• Keep descriptions for all modules and fields concise to prevent truncation or generation drift.
+• Ensure every key in the JSON is unique; do NOT duplicate, merge, or repeat keys (like 'userRole' or 'userName').
+• Do NOT repeat the field definitions inside 'unified_data_contract.fields'. Every field must be declared exactly once.
+
 The JSON MUST contain:
 
-{{
-    "project_name": "...",
-
-    "architecture_version": "...",
-
-    "design_philosophy": "...",
-
-    "phases": [...],
-
-    "unified_data_contract": {{...}}
-}}
+{output_format}
 
 """
     response = client.models.generate_content(
@@ -523,10 +479,31 @@ The JSON MUST contain:
         
     )
 
-    print("Raw Gemini Output:")
-    print(response.text)
+    # print("Raw Gemini Output:")
+    # print(response.text)
 
-get_inp()
+    return response.text
+
+res = get_inp()
+
+res = res.strip()
+
+if res.startswith("```json"):
+    res = res [7:]
+elif res.startswith("```"):
+    res = res[3:]
+if res.endswith("```"):
+    res = res [:-3]
+
+res = res.strip()
+
+try :
+    blueprint_dict = json.loads(res)
+    print("successfully converted json to dict")
+    print(blueprint_dict["project_name"])
+    print(blueprint_dict.keys())
+except json.JSONDecodeError as e:
+    print(f"Failed to parse JSON : {e}")
 
 
 
