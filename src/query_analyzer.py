@@ -25,7 +25,7 @@ client = genai.Client(api_key = gemini_key)
 
 
 
-def get_inp():
+def get_techstack():
 
     # goal = input ("HOW MAY WE HELP YOU??? : ")
     goal = details["goal"]

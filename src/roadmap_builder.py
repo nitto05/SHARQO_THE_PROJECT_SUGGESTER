@@ -142,7 +142,7 @@ Business Goals:
 
 
 
-def get_inp():
+def get_roadmap(details):
 
     # goal = input ("HOW MAY WE HELP YOU??? : ")
     goal = details["goal"]
@@ -255,6 +255,26 @@ USER REQUIREMENTS
 --------------------------------------------------
 
 {goal}
+
+--------------------------------------------------
+DEVELOPER EXPERIENCE LEVEL: {exp}
+--------------------------------------------------
+
+--------------------------------------------------
+ARCHITECTURAL DESIGN RULES BY EXPERIENCE
+--------------------------------------------------
+
+• If the developer is a Beginner:
+  - Keep the module design highly consolidated (fewer modules overall).
+  - Prefer simple, synchronous workflow designs over asynchronous or multi-threaded setups.
+  - Keep module complexity ratings primarily at 'Low' or 'Medium'.
+  - Avoid complex enterprise design patterns (like event sourcing, microservices, or complex background queues).
+• If the developer is Intermediate:
+  - Design a standard layered modular architecture (Presentation, Business Logic, Processing, Integration, Persistence).
+  - Use standard, clean separation of concerns.
+• If the developer is Advanced:
+  - Design production-grade, highly decoupled architectures.
+  - Include modules dedicated to telemetry, structured logging, background task queues, and caching strategies.
 
 --------------------------------------------------
 ARCHITECTURAL OBJECTIVES
@@ -482,28 +502,29 @@ The JSON MUST contain:
     # print("Raw Gemini Output:")
     # print(response.text)
 
-    return response.text
+    
+    res = response.text
 
-res = get_inp()
+    res = res.strip()
 
-res = res.strip()
+    if res.startswith("```json"):
+        res = res [7:]
+    elif res.startswith("```"):
+        res = res[3:]
+    if res.endswith("```"):
+        res = res [:-3]
 
-if res.startswith("```json"):
-    res = res [7:]
-elif res.startswith("```"):
-    res = res[3:]
-if res.endswith("```"):
-    res = res [:-3]
+    res = res.strip()
 
-res = res.strip()
+    return res
 
-try :
-    blueprint_dict = json.loads(res)
-    print("successfully converted json to dict")
-    print(blueprint_dict["project_name"])
-    print(blueprint_dict.keys())
-except json.JSONDecodeError as e:
-    print(f"Failed to parse JSON : {e}")
+    # try :
+    #     blueprint_dict = json.loads(res)
+    #     print("successfully converted json to dict")
+    #     print(blueprint_dict["project_name"])
+    #     print(blueprint_dict.keys())
+    # except json.JSONDecodeError as e:
+    #     print(f"Failed to parse JSON : {e}")
 
 
 
