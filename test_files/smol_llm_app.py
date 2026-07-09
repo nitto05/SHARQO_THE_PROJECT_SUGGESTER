@@ -1,7 +1,19 @@
 from google import genai
 from tools.github_tool import get_repositories, get_readme
 
-# client = genai.Client(api_key="AQ.Ab8RN6LH84vj_fFBjgtDsdiSsi8lYJ4vtVmSqViPIFDi4rJrCg")
+from dotenv import load_dotenv
+import os
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT))
+
+load_dotenv()
+
+gemini_key = os.getenv("GEMINI_API_KEY")
+
+client = genai.Client(api_key = gemini_key)
 
 goal = input("waht do you want to learn? : ")
 repo_data = get_repositories (goal)
