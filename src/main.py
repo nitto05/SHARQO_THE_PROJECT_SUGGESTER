@@ -128,3 +128,31 @@ Business Goals:
 roadmap = get_roadmap(details)
 
 #keys are to be extracted and i am thinking to keep the response in an indented string 
+
+rdmap_keys = ["project_name", "design_philosophy","phases"]
+# if (i == "phases"):
+phas_keys = ["phase_number", "description", "modules"]
+# if (j == "modules"):
+mod_keys = ["name", "description", "phase", "type", "critical", "complexity", "responsibilities"]
+
+identd_str = ""
+
+# print(identd_str)
+
+for i in rdmap_keys : 
+    
+    if (i == "phases") :
+        phases = roadmap["phases"]
+        identd_str = identd_str + i + ":" + "\n"
+        for j in range(0, len(phases)):
+            for k in phas_keys:
+                identd_str = identd_str + "\t" + phases[j][k] + "\n"
+                if (k == "modules") : 
+                    modules = phases["modules"]
+                    identd_str + identd_str + k + ":"
+                
+    else : 
+        identd_str = identd_str + i + " : " + roadmap[i] + "\n"
+    # identd_str = identd_str + "\n"
+    
+    
