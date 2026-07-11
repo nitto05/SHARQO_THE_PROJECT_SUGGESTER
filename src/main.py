@@ -1,4 +1,5 @@
 from roadmap_builder import get_roadmap
+import json
 
 
 
@@ -125,7 +126,9 @@ Business Goals:
     "time" : "5"
 }
 
-roadmap = get_roadmap(details)
+raw_roadmap_string = get_roadmap(details)
+
+roadmap = json.loads(raw_roadmap_string)
 
 #keys are to be extracted and i am thinking to keep the response in an indented string 
 
@@ -146,13 +149,33 @@ for i in rdmap_keys :
         identd_str = identd_str + i + ":" + "\n"
         for j in range(0, len(phases)):
             for k in phas_keys:
-                identd_str = identd_str + "\t" + phases[j][k] + "\n"
-                if (k == "modules") : 
-                    modules = phases["modules"]
-                    identd_str + identd_str + k + ":"
                 
+                if (k == "modules") : 
+                    modules = phases[j]["modules"]
+                    identd_str = identd_str + k + ":" + "\n"
+                    for l in range (0, len(modules)):
+                        
+                        for m in mod_keys:
+                            value = modules[l].get(m, "N/A")
+                            if (isinstance (value, list)):
+                                identd_str = identd_str + "\t\t" + m + ":" + "\n"
+                                for item in value : 
+                                    identd_str = identd_str + "\t\t\t -" + str(item) + "\n" 
+                            else :
+                                identd_str = identd_str + "\t\t" + m + ":" + str(value) + "\n" + "\n"
+                else :
+
+                    value = str(phases[j].get(k, "N/A")) 
+                    identd_str = identd_str + "\t" + k + ":" + value + "\n"
+
     else : 
-        identd_str = identd_str + i + " : " + roadmap[i] + "\n"
-    # identd_str = identd_str + "\n"
-    
+        value = str(roadmap.get(i, "N/A"))
+        identd_str = identd_str + i + " : " + value + "\n"
+
+
+# print(identd_str)
+
+ind_roadmap = identd_str
+
+
     
