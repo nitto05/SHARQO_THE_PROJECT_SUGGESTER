@@ -1,4 +1,16 @@
-# SHARQO<Project Name></project>
+<p align="center">
+  <img src="assets/SHARQO.png" alt="SHARQO Logo" width="400" />
+</p>
+
+<h1 align="center">SHARQO</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/STATUS-IN%20DEVELOPMENT-yellow?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/LLM-GEMINI%20API-blue?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/VECTOR%20DB-QDRANT-purple?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/BACKEND-FASTAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/FRONTEND-REACT-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
+</p>
 
 > SHARQO is an AI assistant that helps users plan their software projects by generating personalized roadmaps, recommending the required technologies, and providing curated learning resources to turn ideas into reality.
 
@@ -325,7 +337,13 @@ project/
 
 # Technologies
 
-> *To be added.*
+SHARQO is built using the following core technologies:
+
+- **Frontend:** React (JavaScript/TypeScript)
+- **Backend Framework:** FastAPI (Python)
+- **LLM Integration:** Google Gemini API (via native `google-genai` SDK)
+- **Vector Database:** Qdrant
+- **Development Language:** Python
 
 ---
 
