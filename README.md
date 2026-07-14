@@ -1,4 +1,8 @@
-# SHARQO<Project Name></project>
+<p align="center">
+  <img src="assets/SHARQO.png" alt="SHARQO Logo" width="400" />
+</p>
+
+<h1 align="center">SHARQO</h1>
 
 > SHARQO is an AI assistant that helps users plan their software projects by generating personalized roadmaps, recommending the required technologies, and providing curated learning resources to turn ideas into reality.
 
