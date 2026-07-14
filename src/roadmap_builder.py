@@ -384,18 +384,13 @@ The JSON MUST contain:
     
     res = response.text
 
-    res = res.strip()
+    start_idx = res.find('{')
+    end_idx = res.rfind('}')
+    
+    if start_idx != -1 and end_idx != -1:
+        res = res[start_idx : end_idx + 1]
 
-    if res.startswith("```json"):
-        res = res [7:]
-    elif res.startswith("```"):
-        res = res[3:]
-    if res.endswith("```"):
-        res = res [:-3]
-
-    res = res.strip()
-
-    return res
+    return res.strip()
 
     # try :
     #     blueprint_dict = json.loads(res)

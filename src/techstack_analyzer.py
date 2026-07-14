@@ -125,16 +125,16 @@ Selection Rules:
 Phase Rules:
 - Phase 1 must contain everything required to build the first complete working version (MVP).
 - Phase 2 must contain ONLY upgrades, enhancements, scalability improvements, or features added after Phase 1 is complete.
-- Strict Exclusion Rule: Do not repeat any technological dependency (e.g., specific languages or core frameworks like Python or Streamlit) in Phase 2 if they are already declared in Phase 1. Phase 2 lists only additions.
+- Strict Exclusion Rule: Do not repeat any technological dependency (e.g., specific languages or core frameworks like Python or React) in Phase 2 if they are already declared in Phase 1. Phase 2 lists only additions.
 - Feature Alignment: If a feature is purely analytical or programmatic (e.g., prompt logic, structured LLM JSON outputs), it belongs in Phase 1. Do not push pure logic features to Phase 2 if they rely on Phase 1 tech. Phase 2 features should focus on infrastructure changes (e.g., adding user auth, cloud sync, data persistence).
 - Dynamic Scaling Rule: Phase 1 must focus exclusively on in-memory, local execution. For an MVP, data should live inside application variables or transient session state. Do NOT include cloud databases, external database client libraries, or user authentication in Phase 1, as configuring them during week one creates boilerplate friction for a beginner. Move persistent cloud storage, database integrations (like Supabase/Firebase), and authentication strictly into Phase 2 as scalability and data-retention upgrades.
 Technology Selection & Architectural Compatibility Rules:
 - Every recommended technology must have an explicit purpose. Do not recommend tools that duplicate roles.
-- ARCHITECTURAL LOCK-IN: Ensure Phase 1 and Phase 2 architectures are vertically compatible. Never recommend a Phase 1 framework that must be completely deleted or rewritten to implement Phase 2 (e.g., Do not recommend Flask in Phase 1 and Streamlit in Phase 2). Phase 2 must naturally extend Phase 1.
+- ARCHITECTURAL LOCK-IN: Ensure Phase 1 and Phase 2 architectures are vertically compatible. Never recommend a Phase 1 framework that must be completely deleted or rewritten to implement Phase 2. Phase 2 must naturally extend Phase 1.
 - INFRASTRUCTURE SANITY CHECK: Ensure your deployment target handles your database selection natively. If you use a cloud provider with an ephemeral file system (e.g., Render free tier, Heroku), do NOT pair it with a file-based database (e.g., SQLite) without explicitly addressing persistent disks, or swap the database to a serverless/cloud database API (e.g., Supabase, MongoDB Atlas) to prevent instant data loss.
-- RUNTIME SANITY CHECK: Identify the chosen framework's core execution behavior. For frameworks that rerun scripts on state changes (e.g., Streamlit), you MUST introduce State Management concepts and local storage libraries directly into Phase 1 to prevent runtime bugs or duplicate API calls.
+- RUNTIME SANITY CHECK: Identify the chosen framework's core execution behavior.
 - PIPELINE PREREQUISITES: If an API library (e.g., google-genai) relies heavily on data schemas or local keys for its core feature to work cleanly, instantly include its dependent tools (e.g., Pydantic for structured JSON matching, python-dotenv for API keys) into Phase 1 alongside it.
-- Deployment Streamlining: Match your deployment target strictly to your framework. If a framework provides a native, zero-configuration cloud hosting solution designed specifically for its platform (e.g., Streamlit Community Cloud), prioritize it over general containerization or multi-purpose hosts (e.g., Docker, Render) to minimize environment overhead for low-experience developers.
+- Deployment Streamlining: Match your deployment target strictly to your framework.
 Return exactly in this format:
 {op_format}
 """
