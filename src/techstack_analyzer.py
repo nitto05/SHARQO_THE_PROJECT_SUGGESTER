@@ -1,6 +1,10 @@
+import requests 
+from bs4 import BeautifulSoup
+
+
 import json
 from google import genai
-
+from google.genai import types
 from dotenv import load_dotenv
 import os
 import sys
@@ -15,14 +19,42 @@ gemini_key = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key = gemini_key)
 
-# details = home_get_inp() #this fucntions brings the details of goal, exp, time from the webpage in string format...
+def web_search (query):
+    """
+    Searches the web for the given query and returns a list of result URLs and snippets.
+    """
 
-# details = {
-#     "goal" : "I want to build an AI-powered resume analyzer that compares resumes with job descriptions and suggests improvements using LLMs.",
-#     "exp" : "beginner",
-#     "time" : "5"
-# }
+    return f"[Search results for : {query}]"
 
+def scrape_page (url):
+    """
+    Scrapes a webpage and returns its plain text content.
+    """
+
+    try:
+        response = requests.get(url, timeout = 10)
+        soup = BeautifulSoup (response.text, "html.parser")
+        raw_text = soup.get_text(separator = "", strip = True)[:3000]
+    # except Exception as e :
+    #     return f"[Error scraping {url} : {str(e)}]"
+        filter_prompt = f"""
+        You are a tech stack extraction bot.
+You were given this raw text scraped from a website.
+Your job is to:
+1. Decide if this text is relevant to tech stack selection. (YES or NO)
+2. If YES, extract only the technology names mentioned (libraries, frameworks, databases, tools).
+3. Return a structured JSON list.
+Text:
+{raw_text}
+        """
+
+        filter_response = client.models.generate_content(
+            model = "gemini-2.5-flash-lite",
+            contents = filter_prompt
+        )
+        return filter_response.text
+    except Exception as e:
+        return f"[Error scraping {url} : {str(e)}]"
 
 
 def get_techstack(details, ind_roadmap):
@@ -67,6 +99,40 @@ Developer Experience:
 {exp}
 Available Development Time:
 {time}
+
+Architectural Search & Synthesis Workflow:
+Simulate the following workflow of an advanced developer starting a project from scratch:
+
+1. Classify the Project Type:
+   First, identify what kind of deliverable this project produces. Examples:
+   - Web Application (browser-accessible frontend + API backend)
+   - Mobile Application (iOS/Android native or cross-platform)
+   - Desktop Application (GUI on Windows/macOS/Linux)
+   - CLI Tool (terminal-based, no UI)
+   - API/Backend Service (no frontend, just endpoints)
+   - Data Pipeline (batch processing, ETL, automation)
+   - Embedded/IoT System (hardware-attached software)
+   - Hybrid (e.g., a web app with a mobile companion app)
+   A project may belong to more than one type.
+
+2. Segment into Architectural Pillars:
+   Based on the project type, select ONLY the architectural pillars that are relevant:
+   - INTERFACE: How users interact with the system (Frontend, Mobile UI, Desktop GUI, CLI, None).
+   - SERVER: How the business logic is hosted and routed (API backend, serverless functions, none if client-side only).
+   - BRAIN: Core computational logic (LLM interaction, ML models, rule engines, algorithms, data processing).
+   - STORAGE: How data is persisted (relational DB, vector DB, object storage, file system, none if stateless).
+   - INFRASTRUCTURE: Deployment, CI/CD, containerization (only if the project scope requires it).
+   Do NOT force pillars that do not apply.
+
+3. Look for Precedents:
+   For each active pillar, use the web_search tool to find similar successful open-source projects at the appropriate experience level.
+   Combine the most common, well-maintained libraries from those precedents.
+
+4. Verify via Developer Search:
+   Use the web_search and scrape_page tools to prioritize technologies with active community support, modern documentation, and clear beginner integration guides.
+   Reject libraries that are outdated, unmaintained, or have high setup friction for the given experience level.
+
+
 Analyze the project and identify:
 1. Tech Stack
 - Programming Languages
@@ -141,9 +207,11 @@ Return exactly in this format:
     response = client.models.generate_content(
         # model="gemini-2.5-flash",
         # model = "gemini-2.0-flash",
-        model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
+        model="gemini-2.5-flash-lite", # gemini-2.5-flash-lite or gemini-2.5-flash
         
-        contents= prompt
+        contents= prompt,
+
+        config = types.GenerateContentConfig(tools = [web_search, scrape_page])
         
     )
 
