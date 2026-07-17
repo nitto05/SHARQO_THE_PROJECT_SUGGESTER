@@ -167,6 +167,9 @@ Business Goals:
 
 raw_roadmap_string = get_roadmap(details)
 
+print(raw_roadmap_string[61900:62200])  # shows the broken area
+print("LENGTH:", len(raw_roadmap_string))
+
 roadmap = json.loads(raw_roadmap_string)
 
 #keys are to be extracted and i am thinking to keep the response in an indented string 

@@ -16,17 +16,18 @@ sys.path.append(str(ROOT))
 load_dotenv()
 
 gemini_key = os.getenv("GEMINI_API_KEY")
+tavily_api_key = os.getenv("TAVILY_API_KEY")
 
 client = genai.Client(api_key = gemini_key)
 
-def web_search (query):
+def web_search(query: str) -> str:
     """
     Searches the web for the given query and returns a list of result URLs and snippets.
     """
 
     return f"[Search results for : {query}]"
 
-def scrape_page (url):
+def scrape_page(url: str) -> str:
     """
     Scrapes a webpage and returns its plain text content.
     """
@@ -207,7 +208,7 @@ Return exactly in this format:
     response = client.models.generate_content(
         # model="gemini-2.5-flash",
         # model = "gemini-2.0-flash",
-        model="gemini-2.5-flash-lite", # gemini-2.5-flash-lite or gemini-2.5-flash
+        model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
         
         contents= prompt,
 
@@ -216,6 +217,16 @@ Return exactly in this format:
     )
 
     res = response.text
+
+    # res = response.text
+    print("RAW RESPONSE:", res)  # add this to see what came back
+    print("CANDIDATES:", response.candidates)  # shows tool call vs text
+
+
+    if res is None:
+        print("Gemini returned None — likely made tool calls without final text")
+        print("Full response:", response)
+        return "{}"  # return empty JSON safely
 
     res = res.strip()
 
