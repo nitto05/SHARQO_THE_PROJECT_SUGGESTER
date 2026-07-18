@@ -361,7 +361,9 @@ The last character of your response MUST be }}
 Your entire response must be a single valid JSON object.
 
 JSON QUALITY & CONCISENESS RULES:
-• Keep descriptions for all modules and fields concise to prevent truncation or generation drift.
+• CRITICAL : GENERATE the JSON in MINIFIED format (no indented, no newlines, no extra spaces) to avoid hitting output token limits.
+• Keep descriptions for all modules, fields, and unified data contract fields strictly UNDER 12 words.
+
 • Ensure every key in the JSON is unique; do NOT duplicate, merge, or repeat keys (like 'userRole' or 'userName').
 • Do NOT repeat the field definitions inside 'unified_data_contract.fields'. Every field must be declared exactly once.
 
@@ -377,7 +379,8 @@ The JSON MUST contain:
         
         contents= prompt,
         config=types.GenerateContentConfig(
-        max_output_tokens=65536
+        max_output_tokens=65536,
+        response_mime_type = "application/json"
     )
         
     )
