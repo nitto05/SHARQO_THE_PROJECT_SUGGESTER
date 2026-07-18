@@ -10,6 +10,18 @@ import os
 import sys
 from pathlib import Path
 
+tools_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "tools"
+    )
+)
+
+sys.path.insert(0, tools_dir)
+
+from web_search_tool import get_search_results as web_search
+
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT))
 
@@ -20,12 +32,7 @@ tavily_api_key = os.getenv("TAVILY_API_KEY")
 
 client = genai.Client(api_key = gemini_key)
 
-def web_search(query: str) -> str:
-    """
-    Searches the web for the given query and returns a list of result URLs and snippets.
-    """
 
-    return f"[Search results for : {query}]"
 
 def scrape_page(url: str) -> str:
     """
