@@ -14,6 +14,7 @@ def get_search_results(query: str) -> str:
     Searches the web for the given query and returns a list of result URLs 
     and content snippets.
     """
+    print(f"\n🔍 [AGENT WEB SEARCH] Query: '{query}'")
 
     try: 
         results = tavily_client.search(
