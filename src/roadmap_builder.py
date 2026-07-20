@@ -376,7 +376,7 @@ The JSON MUST contain:
         # model="gemini-2.5-flash",
         # model = "gemini-2.0-flash",
         # model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
-        model="gemini-2.5-flash-lite",
+        model="gemini-2.5-flash",
         contents= prompt,
         config=types.GenerateContentConfig(
         max_output_tokens=65536,
@@ -391,11 +391,11 @@ The JSON MUST contain:
     
     res = response.text
 
-    start_idx = res.find('{')
-    end_idx = res.rfind('}')
+    # start_idx = res.find('{')
+    # end_idx = res.rfind('}')
     
-    if start_idx != -1 and end_idx != -1:
-        res = res[start_idx : end_idx + 1]
+    # if start_idx != -1 and end_idx != -1:
+    #     res = res[start_idx : end_idx + 1]
 
     return res.strip()
 

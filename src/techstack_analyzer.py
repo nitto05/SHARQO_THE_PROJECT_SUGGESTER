@@ -165,7 +165,8 @@ Infer useful APIs or external services.
 5. Optional Features
 Suggest additional features that are realistic for the given experience level and available development time.
 Rules:
-- SEARCH MANDATE: You are strictly forbidden from generating the tech stack using only your internal training knowledge. You MUST execute at least two web_search queries to look up similar open-source precedents and inspect them before finalizing your tech stack list.
+Rules:
+- MANDATORY TOOL CALL: You are STRONGLY REQUIRED to execute at least two web_search tool calls BEFORE generating any JSON output. Do NOT rely solely on internal training memory.
 - Infer missing requirements logically.
 - Do not include explanations.
 - Remove duplicates.
@@ -217,7 +218,7 @@ Return exactly in this format:
         # model="gemini-2.5-flash",
         # model = "gemini-2.0-flash",
         # model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
-        model="gemini-2.5-flash-lite",
+        model="gemini-2.5-flash",
         contents= prompt,
 
         config = types.GenerateContentConfig(tools = [web_search, scrape_page])
