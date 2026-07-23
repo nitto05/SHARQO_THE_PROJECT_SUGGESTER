@@ -44,7 +44,7 @@ TOOL_REGISTRY = {
     "function_name": "get_papers"
 },
 "CROSSREF": {
-    "valid" : True,
+    "valid" : False,
 
     "id_rules": {
         "journal articles",
@@ -66,7 +66,7 @@ TOOL_REGISTRY = {
     "function_name": "get_crossref_papers"
 },
 "PUBMED": {
-    "valid" : True,
+    "valid" : False,
 
     "id_rules": {
         "medicine",
@@ -91,7 +91,7 @@ TOOL_REGISTRY = {
     "function_name": "get_pubmed_papers"
 },
 "POETRYDB": {
-    "valid" : True,
+    "valid" : False,
 
     "id_rules": {
         "poetry",
@@ -119,7 +119,7 @@ TOOL_REGISTRY = {
     "function_name": "get_poems"
 },
 "OPEN_LIBRARY": {
-    "valid" : True,
+    "valid" : False,
 
     "id_rules": {
         "books",
