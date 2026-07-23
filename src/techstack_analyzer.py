@@ -1,3 +1,4 @@
+from urllib3 import response
 import requests 
 from bs4 import BeautifulSoup
 
@@ -9,6 +10,7 @@ from dotenv import load_dotenv
 import os
 import sys
 from pathlib import Path
+from api_helper import safe_generate_json
 
 tools_dir = os.path.abspath(
     os.path.join(
@@ -214,19 +216,9 @@ Technology Selection & Architectural Compatibility Rules:
 Return exactly in this format:
 {op_format}
 """
-    response = client.models.generate_content(
-        # model="gemini-2.5-flash",
-        # model = "gemini-2.0-flash",
-        # model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
-        model="gemini-2.5-flash",
-        contents= prompt,
-
-        config = types.GenerateContentConfig(tools = [web_search, scrape_page])
-    )
-
+    config = types.GenerateContentConfig(tools = [web_search, scrape_page])
+    response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
     res = response.text
-
-    # res = response.text
     print("RAW RESPONSE:", res)  # add this to see what came back
     print("CANDIDATES:", response.candidates)  # shows tool call vs text
 
