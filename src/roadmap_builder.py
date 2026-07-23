@@ -1,3 +1,4 @@
+from pydantic import config
 import json
 from google import genai
 from google.genai import types
@@ -6,6 +7,7 @@ from dotenv import load_dotenv
 import os
 import sys
 from pathlib import Path
+from api_helper import safe_generate_json
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT))
@@ -372,22 +374,13 @@ The JSON MUST contain:
 {output_format}
 
 """
-    response = client.models.generate_content(
-        # model="gemini-2.5-flash",
-        # model = "gemini-2.0-flash",
-        # model="gemini-2.5-flash", # gemini-2.5-flash-lite or gemini-2.5-flash
-        model="gemini-2.5-flash",
-        contents= prompt,
-        config=types.GenerateContentConfig(
+
+    config = types.GenerateContentConfig(
         max_output_tokens=65536,
         response_mime_type = "application/json"
     )
-        
-    )
 
-    # print("Raw Gemini Output:")
-    # print(response.text)
-
+    response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
     
     res = response.text
 
