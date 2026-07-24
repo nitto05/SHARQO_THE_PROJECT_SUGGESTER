@@ -165,7 +165,10 @@ Business Goals:
     "time" : "10"
 }
 
+
 raw_roadmap_string = get_roadmap(details)
+
+
 
 # print(raw_roadmap_string[61900:62200])  # shows the broken area
 print("LENGTH:", len(raw_roadmap_string))
@@ -218,7 +221,7 @@ for i in rdmap_keys :
 
 ind_roadmap = identd_str
 
-
+# print(ind_roadmap)
 
 
 tech_stack = get_techstack(details, ind_roadmap)

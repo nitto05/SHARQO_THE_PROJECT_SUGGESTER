@@ -67,6 +67,8 @@ Text:
         return f"[Error scraping {url} : {str(e)}]"
 
 
+
+
 def get_techstack(details, ind_roadmap):
 
     # goal = input ("HOW MAY WE HELP YOU??? : ")

@@ -24,6 +24,7 @@ client = genai.Client(api_key = gemini_key)
 
 
 
+
 def get_roadmap(details):
 
     # goal = input ("HOW MAY WE HELP YOU??? : ")
@@ -40,6 +41,7 @@ def get_roadmap(details):
         time_limit = 4
     
     
+    
     module_template = """{
                     "module_id": "...",
                     "name": "...",
@@ -50,21 +52,9 @@ def get_roadmap(details):
                     "critical": true,
                     "complexity": "...",
                     "depends_on": [],
-                    "interfaces": {
-                        "consumes": [],
-                        "produces": []
-                    },
-                    "responsibilities": [],
-                    "inputs": [],
-                    "outputs": [],
-                    "state": {
-                        "owner": "...",
-                        "lifetime": "...",
-                        "location": "...",
-                        "persistence": "..."
-                    },
-                    "capabilities": []
+                    "responsibilities": []
                 }"""
+
     if time_limit < 4:
         phase_structure = f"""
         [
@@ -363,6 +353,9 @@ The last character of your response MUST be }}
 Your entire response must be a single valid JSON object.
 
 JSON QUALITY & CONCISENESS RULES:
+
+• CRITICAL: For 'beginner' experience level, consolidate modules strictly. Generate AT MOST 4-5 modules for Phase 1 and AT MOST 3 modules for Phase 2. Do not decompose simple operations into separate modules.
+
 • CRITICAL : GENERATE the JSON in MINIFIED format (no indented, no newlines, no extra spaces) to avoid hitting output token limits.
 • Keep descriptions for all modules, fields, and unified data contract fields strictly UNDER 12 words.
 
@@ -376,7 +369,8 @@ The JSON MUST contain:
 """
 
     config = types.GenerateContentConfig(
-        max_output_tokens=65536,
+        max_output_tokens=8192,
+        temperature = 0.2,
         response_mime_type = "application/json"
     )
 
@@ -400,6 +394,6 @@ The JSON MUST contain:
     # except json.JSONDecodeError as e:
     #     print(f"Failed to parse JSON : {e}")
 
-
+# print(get_roadmap(details))
 
 
