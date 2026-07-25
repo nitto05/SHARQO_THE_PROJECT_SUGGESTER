@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 from api_helper import safe_generate_json
+from local_llm_client import query_local_llm
 
 tools_dir = os.path.abspath(
     os.path.join(
@@ -36,9 +37,11 @@ client = genai.Client(api_key = gemini_key)
 
 
 
-def scrape_page(url: str) -> str:
+def scrape_page(url: str, llm : str = "gemini", concepts : str = "") -> str:
     """
-    Scrapes a webpage and returns its plain text content.
+    Scrapes a webpage and processes it:
+    - Gemini: Extracts technology name listings.
+    - Qwen: Evaluates architectural compatibility and setup templates.
     """
 
     try:
@@ -47,22 +50,45 @@ def scrape_page(url: str) -> str:
         raw_text = soup.get_text(separator = "", strip = True)[:3000]
     # except Exception as e :
     #     return f"[Error scraping {url} : {str(e)}]"
-        filter_prompt = f"""
-        You are a tech stack extraction bot.
-You were given this raw text scraped from a website.
-Your job is to:
-1. Decide if this text is relevant to tech stack selection. (YES or NO)
-2. If YES, extract only the technology names mentioned (libraries, frameworks, databases, tools).
-3. Return a structured JSON list.
-Text:
-{raw_text}
-        """
+        if llm == "gemini" :
+            filter_prompt = f"""
+            You are a tech stack extraction bot.
+    You were given this raw text scraped from a website.
+    Your job is to:
+    1. Decide if this text is relevant to tech stack selection. (YES or NO)
+    2. If YES, extract only the technology names mentioned (libraries, frameworks, databases, tools).
+    3. Return a structured JSON list.
+    Text:
+    {raw_text}
+            """
+            print(f"[Scraper] Parsing page details via Gemini Cloud...")
+            
 
-        filter_response = client.models.generate_content(
-            model = "gemini-2.5-flash-lite",
-            contents = filter_prompt
-        )
-        return filter_response.text
+            filter_response = client.models.generate_content(
+                model = "gemini-2.5-flash-lite",
+                contents = filter_prompt
+            )
+            return filter_response.text
+
+        elif llm == "qwen" :
+            compatibility_prompt = f"""
+                You are a Software Compatibility and Feature Analyzer.
+            You are given this raw documentation text scraped from a website:
+            
+            {raw_text}
+            
+            We want to verify if this technology can implement these specific concepts:
+            Target Concepts: {concepts}
+            
+            Analyze the documentation and output:
+            1. Which of the target concepts can ACTUALLY be implemented using this technology? (List them).
+            2. Explain briefly how this technology implements each of those concepts based on the documentation.
+            3. Are there any known conflicts or version locks (e.g. CUDA, Python versions) mentioned?
+            """
+            print(f"[Scraper] Verifying concept compatibility locally using Qwen...")
+            filter_response = query_local_llm(compatibility_prompt, max_tokens= 384, temperature = 0.1)
+            return filter_response
+    
     except Exception as e:
         return f"[Error scraping {url} : {str(e)}]"
 
@@ -262,7 +288,12 @@ Return exactly in this format:
         fin_data ["concepts_p1"] = (res_dict["concepts"]["phase1"])
         fin_data ["concepts_p2"] = (res_dict["concepts"]["phase2"])
 
-
+        ind_str = ""
+        for keys in fin_data:
+            ind_str += keys + ":" + "\n"
+            for j in fin_data[keys]:
+                ind_str += "\t" + j + "\n"
+        
 
 
         

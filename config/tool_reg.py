@@ -326,3 +326,13 @@ TOOL_REGISTRY = {
     "function_name": "get_workouts"
 }
 }
+
+LOCAL_TOOLS = {
+    "web_search": {
+        "file" : "web_search_tool",
+        "fucntion" : "get_search_rules"
+
+},
+
+    "scrape_page" : 
+}
