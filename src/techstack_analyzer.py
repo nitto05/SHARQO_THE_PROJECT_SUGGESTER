@@ -230,6 +230,7 @@ Return exactly in this format:
         print("Full response:", response)
         return "{}"  # return empty JSON safely
 
+
     res = res.strip()
 
     if res.startswith("```json"):
@@ -241,7 +242,33 @@ Return exactly in this format:
 
     res = res.strip()
 
-    return res
+    concept_map = {}
+
+    try : 
+        res_dict = json.loads(res)
+
+        # tech_list = []
+        # raw_tech = res_dict.get("techstack", [])
+        # if isinstance(raw_tech, dict):
+        #     for phase, list_of_techs in raw_tech.items():
+        #         if isinstance(list_of_techs, list):
+        #             tech_list.extend()
+
+        # phase wise learning...
+        
+
+        fin_data = dict()
+        fin_data ["techstack"] = list(set(res_dict["techstack"]["phase2"]).union(set(res_dict["techstack"]["phase1"])))
+        fin_data ["concepts_p1"] = (res_dict["concepts"]["phase1"])
+        fin_data ["concepts_p2"] = (res_dict["concepts"]["phase2"])
+
+
+
+
+        
+
+
+    # return res
 
 
 
