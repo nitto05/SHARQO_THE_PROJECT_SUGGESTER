@@ -358,10 +358,11 @@ JSON QUALITY & CONCISENESS RULES:
 
 • CRITICAL : GENERATE the JSON in MINIFIED format (no indented, no newlines, no extra spaces) to avoid hitting output token limits.
 • Keep descriptions for all modules, fields, and unified data contract fields strictly UNDER 12 words.
+• CRITICAL: Do NOT add any extra keys (such as 'data_residence', 'data_produced', 'data_lifetime', 'data_consumed') to the module JSON objects. Every module object MUST contain ONLY the keys defined in the `module_template` schema and nothing else.
 
 • Ensure every key in the JSON is unique; do NOT duplicate, merge, or repeat keys (like 'userRole' or 'userName').
 • Do NOT repeat the field definitions inside 'unified_data_contract.fields'. Every field must be declared exactly once.
-
+• CRITICAL: Generate AT MOST 8 fields in the 'unified_data_contract.fields' list. Only include core, high-priority fields (e.g. userId, username, email, activeSession, messageHistory, mockTestScore) to prevent output token truncation. Do NOT generate fields for every single possible feature.
 The JSON MUST contain:
 
 {output_format}
@@ -373,10 +374,26 @@ The JSON MUST contain:
         temperature = 0.2,
         response_mime_type = "application/json"
     )
+    try:
+        response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
+        
+        res = response.text.strip()
 
-    response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
-    
-    res = response.text
+        try:
+            with open("roadmap_cache.json", "w", encoding = "utf-8") as f:
+                f.write(res)
+        except Exception as cache_err:
+            print(f"Warning: Failed to update cache : {cache_err}")
+        return res
+    except Exception as e:
+        cache_path = "roadmap_cache.json"
+        if os.path.exists(cache_path):
+            print(f"Live API call failed ({e}). Returning cached roadmap from disk. ")
+            with open(cache_path, "r", encoding = "utf-8") as f:
+                return f.read()
+        raise e
+
+
 
     # start_idx = res.find('{')
     # end_idx = res.rfind('}')
@@ -384,7 +401,7 @@ The JSON MUST contain:
     # if start_idx != -1 and end_idx != -1:
     #     res = res[start_idx : end_idx + 1]
 
-    return res.strip()
+    # return res.strip()
 
     # try :
     #     blueprint_dict = json.loads(res)

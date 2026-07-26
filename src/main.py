@@ -225,5 +225,9 @@ ind_roadmap = identd_str
 
 
 tech_stack = get_techstack(details, ind_roadmap)
-print(tech_stack)
+print("full techstack : ")
+print(tech_stack["techstack"])
+
+print("learning mappings : ")
+print(tech_stack["map"])
 
