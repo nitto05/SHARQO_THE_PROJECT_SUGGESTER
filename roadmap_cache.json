@@ -1,0 +1,89 @@
+{
+    "project_name": "GateSter",
+    "architecture_version": "1.0.0",
+    "design_philosophy": "A focused, modular mentoring app for GATE CS aspirants prioritizing local, memory-only state for the MVP.",
+    "phases": [
+        {
+            "phase_number": 1,
+            "description": "Core MVP containing search interfaces, memory-based session states, and LLM integrations.",
+            "modules": [
+                {
+                    "module_id": "user_interface",
+                    "name": "User Interface Console",
+                    "description": "Streamlit-based user frontend console interface.",
+                    "phase": 1,
+                    "priority": 1,
+                    "type": "Presentation Layer",
+                    "critical": true,
+                    "complexity": "Low",
+                    "depends_on": [],
+                    "responsibilities": ["Renders user chat console", "Displays roadmap timelines"]
+                },
+                {
+                    "module_id": "user_authentication",
+                    "name": "User & Authentication",
+                    "description": "Handles local mock user sessions.",
+                    "phase": 1,
+                    "priority": 2,
+                    "type": "Authentication Layer",
+                    "critical": true,
+                    "complexity": "Low",
+                    "depends_on": ["user_interface"],
+                    "responsibilities": ["Manages session state locks"]
+                },
+                {
+                    "module_id": "data_persistence",
+                    "name": "Data Persistence",
+                    "description": "Manages transient memory-based session stores.",
+                    "phase": 1,
+                    "priority": 3,
+                    "type": "Persistence Layer",
+                    "critical": true,
+                    "complexity": "Low",
+                    "depends_on": [],
+                    "responsibilities": ["Saves in-memory session summaries"]
+                }
+            ]
+        },
+        {
+            "phase_number": 2,
+            "description": "Scalability upgrades including vector indexing and cloud databases.",
+            "modules": [
+                {
+                    "module_id": "adaptive_learning",
+                    "name": "Adaptive Core Engine",
+                    "description": "Infers weak topics and manages spaced repetition.",
+                    "phase": 2,
+                    "priority": 1,
+                    "type": "Business Logic Layer",
+                    "critical": false,
+                    "complexity": "Medium",
+                    "depends_on": ["data_persistence"],
+                    "responsibilities": ["Generates study plans"]
+                }
+            ]
+        }
+    ],
+    "unified_data_contract": {
+        "name": "GateSter Core Contract",
+        "description": "Unified data format for messaging and performance statistics.",
+        "fields": [
+            {
+                "name": "userId",
+                "type": "string",
+                "description": "Unique identifier of the user",
+                "required": true,
+                "nullable": false,
+                "example": "usr_101"
+            },
+            {
+                "name": "messageHistory",
+                "type": "array",
+                "description": "List of past messages in active session",
+                "required": true,
+                "nullable": false,
+                "example": "[]"
+            }
+        ]
+    }
+}

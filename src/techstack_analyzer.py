@@ -95,7 +95,7 @@ def scrape_page(url: str, llm : str = "gemini", concepts : str = "") -> str:
 
 
 
-def get_techstack(details, ind_roadmap):
+def get_techstack(details:dict, ind_roadmap:str) -> dict:
 
     # goal = input ("HOW MAY WE HELP YOU??? : ")
     goal = details["goal"]
@@ -294,6 +294,60 @@ Return exactly in this format:
             for j in fin_data[keys]:
                 ind_str += "\t" + j + "\n"
         
+        search_context = ""
+        print("\n Queries Tavily web search for techonology precedents...")
+        for tech in fin_data["techstack"]:
+            query = f"{tech} github implementation open source project"
+            search_results = web_search(query)
+            search_context += f"--- Search Results for {tech} --- \n{search_results}\n\n"
+
+        mapping_prompt = f"""
+                You are a Technical Mentor and Software Architect.
+                I have a list of technologies and theoretical concepts:
+                
+                {ind_str}
+                
+                To verify compatibility, I have scraped the web for reference projects on GitHub combining these tools:
+                {search_context}
+                
+                CRITICAL VERIFICATION RULES:
+                1. VALID RELATIONSHIP ONLY: Read the search context and verify whether the technology can ACTUALLY implement the matched concepts. Reject pairings that do not match real-world tool capabilities.
+                2. GITHUB PRECEDENT: Only map a technology to a concept if the search context confirms there are real repositories on GitHub implementing this concept using this technology.
+                
+                Generate a single JSON dictionary where the keys are the technology names, and the values are lists of exactly 2 lists:
+                - The first list contains Phase 1 concepts implemented by this technology. (Empty list [] if not used in Phase 1).
+                - The second list contains Phase 2 concepts implemented by this technology. (Empty list [] if not used or replaced in Phase 2).
+                
+                Example format:
+                {{
+                "SQLAlchemy": [["SQLite Database"], ["PostgreSQL", "ORM Scaling"]],
+                "Flask": [["RESTful APIs"], []],
+                "Docker": [[], ["Containerization"]]
+                }}
+                
+                Only return the raw JSON dictionary. Do not include markdown code block wraps (```) or explanation text.
+
+            """
+        print("\n Mapping tech stack to concepts locally using Qwen (grounded in search)...")
+
+        qwen_res = query_local_llm(mapping_prompt, max_tokens = 768, temperature = 0.1)
+
+        clean_qwen = qwen_res.replace("```json","").replace("```", "").strip()
+        concept_map = json.loads(clean_qwen)
+
+        fin_data["mappings"] = concept_map
+        ret_dict = dict()
+        ret_dict["techstack"] = res
+        ret_dict["map"] = json.dumps(fin_data, indent =4)
+        # return res, json.dumps(fin_data, indent =4)
+        return ret_dict
+
+    except Exception as e:
+        print(f"\n Error generating concept lifecycle mapping ; {e}")     
+        err_dict = dict()
+        err_dict["techstack"] = res
+        err_dict["map"] = "{}"
+        return err_dict   
 
 
         
