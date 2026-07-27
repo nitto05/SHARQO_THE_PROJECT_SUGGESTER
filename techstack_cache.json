@@ -2,94 +2,114 @@
     "techstack": {
         "phase1": [
             "Python",
-            "Streamlit",
             "FastAPI",
-            "google-generativeai",
-            "qdrant-client",
-            "SQLModel",
-            "psycopg2-binary",
-            "python-dotenv",
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "google-generativeai SDK",
+            "Qdrant Cloud",
             "Pydantic",
-            "Render"
+            "python-dotenv",
+            "In-memory Python Data Structures"
         ],
         "phase2": [
-            "React Native",
+            "PostgreSQL",
+            "SQLAlchemy",
+            "OAuth2/JWT",
+            "Flutter",
+            "OpenAI API",
+            "Anthropic Claude API",
+            "Pillow (PIL Fork)",
+            "Google Cloud Speech-to-Text API",
+            "Google Cloud Text-to-Speech API",
+            "PyPDF2/pdfplumber",
             "Docker",
-            "GitHub Actions",
-            "Redis",
-            "Google Cloud Platform",
-            "openai",
-            "anthropic"
+            "Google Cloud Platform"
         ]
     },
     "concepts": {
         "phase1": [
+            "Data Structures",
+            "Algorithms",
+            "HTTP/REST",
+            "Concurrency (asyncio)",
+            "Object-Oriented Programming",
+            "API Design",
             "Natural Language Processing (NLP)",
             "Large Language Models (LLMs)",
             "Embeddings",
-            "Retrieval Augmented Generation (RAG)",
+            "Vector Databases",
+            "Retrieval-Augmented Generation (RAG)",
             "Semantic Search",
+            "Prompt Engineering",
             "Intent Classification",
-            "API Design (RESTful)",
+            "Tool Use/Routing",
             "Modular Design",
-            "Dependency Management",
             "Version Control (Git)",
-            "Relational Databases (SQL, Schema Design)",
-            "Vector Databases (Vector Similarity Search, Indexing)",
-            "Data Structures",
-            "Algorithms",
-            "Object-Oriented Programming",
-            "Asynchronous Programming (asyncio)",
-            "HTTP/HTTPS"
+            "Dependency Management",
+            "Error Handling",
+            "Basic Testing",
+            "Client-Server Architecture",
+            "RESTful APIs",
+            "Key-Value Stores",
+            "In-memory Data Management",
+            "Vector Space Models"
         ],
         "phase2": [
-            "Distributed Systems",
-            "Microservices Architecture",
-            "DevOps",
-            "Containerization",
-            "Continuous Integration/Continuous Deployment (CI/CD)",
+            "Database Design (Relational)",
+            "ORM Concepts",
+            "Advanced Data Structures",
+            "Caching",
             "Adaptive Learning",
-            "Spaced Repetition",
+            "Spaced Repetition Algorithms",
+            "Personalization Algorithms",
             "Multimodal AI",
-            "Optical Character Recognition (OCR)",
+            "Microservices",
+            "Event-Driven Architecture",
+            "CI/CD",
+            "Observability (Logging, Monitoring)",
+            "Security (Authentication/Authorization)",
+            "WebSocket",
             "Load Balancing",
-            "API Gateway",
-            "Caching Strategies"
+            "CDN",
+            "SQL",
+            "Database Indexing",
+            "Database Transactions",
+            "Statistical Analysis",
+            "Probabilistic Models"
         ]
     },
     "domain": [
-        "GATE Examination",
-        "Computer Science Engineering",
-        "Engineering Mathematics",
-        "Aptitude",
-        "Educational Technology (EdTech)",
-        "Mentorship/Tutoring"
+        "GATE Examination Structure",
+        "GATE Syllabus",
+        "Educational Pedagogy",
+        "Learning Methodologies (Spaced Repetition, Active Recall)"
     ],
     "apis": {
         "phase1": [
             "Google Gemini API",
             "Qdrant Cloud API",
-            "PostgreSQL"
+            "News API"
         ],
         "phase2": [
+            "PostgreSQL Database Service",
             "OpenAI API",
             "Anthropic Claude API",
-            "Google Cloud Vision API",
             "Google Cloud Speech-to-Text API",
             "Google Cloud Text-to-Speech API"
         ]
     },
     "optional_features": {
         "phase1": [
-            "Basic User Dashboard (progress summary)",
-            "User Profile Management",
-            "AI Response Feedback Mechanism"
+            "Basic Usage Analytics",
+            "Simple Administrator Console for Content Upload",
+            "Basic Markdown Rendering for Chat Responses"
         ],
         "phase2": [
-            "AI-powered Question Generation",
-            "Study Group Collaboration",
-            "Customizable UI Themes",
-            "Subscription/Payment Gateway Integration"
+            "User Feedback Mechanism",
+            "Integration with Calendar/Scheduling Tools",
+            "Achievements/Badges for Mock Test Performance",
+            "Dark Mode UI Theme"
         ]
     }
 }

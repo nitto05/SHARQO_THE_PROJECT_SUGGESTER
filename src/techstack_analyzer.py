@@ -251,6 +251,7 @@ Return exactly in this format:
         res = response.text.strip()
 
         try:
+            json.loads(res)
             with open("techstack_cache.json", "w", encoding = "utf-8") as f:
                 f.write(res)
         except Exception as cache_err:

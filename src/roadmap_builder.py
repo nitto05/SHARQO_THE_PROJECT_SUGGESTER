@@ -380,6 +380,7 @@ The JSON MUST contain:
         res = response.text.strip()
 
         try:
+            json.loads(res)
             with open("roadmap_cache.json", "w", encoding = "utf-8") as f:
                 f.write(res)
         except Exception as cache_err:

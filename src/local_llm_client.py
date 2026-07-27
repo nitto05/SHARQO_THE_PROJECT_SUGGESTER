@@ -7,7 +7,7 @@ from api_helper import safe_generate_json
 
 load_dotenv()
 
-LOCAL_SERVER_URL = "http://127.0.0.1:8000/generate"
+LOCAL_SERVER_URL = os.getenv("LOCAL_SERVER_URL", "http://127.0.0.1:8000/generate")
 
 gemini_client = genai.Client(api_key = os.getenv("GEMINI_API_KEY"))
 
