@@ -244,17 +244,33 @@ Technology Selection & Architectural Compatibility Rules:
 Return exactly in this format:
 {op_format}
 """
-    config = types.GenerateContentConfig(tools = [web_search, scrape_page])
-    response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
-    res = response.text
-    print("RAW RESPONSE:", res)  # add this to see what came back
-    print("CANDIDATES:", response.candidates)  # shows tool call vs text
+
+    try:
+        config = types.GenerateContentConfig(tools = [web_search, scrape_page])
+        response = safe_generate_json(client, "gemini-2.5-flash", prompt, config)
+        res = response.text.strip()
+
+        try:
+            with open("techstack_cache.json", "w", encoding = "utf-8") as f:
+                f.write(res)
+        except Exception as cache_err:
+            print(f"Warning: Failed to update techstack cache: {cache_err}")
+    except Exception as e:
+        cache_path = "techstack_cache.json"
+        if os.path.exists(cache_path):
+            print(f"Live techstack API call failed ({e}). Returning cached techstack.")
+            with open(cache_path, "r", encoding = "utf-8") as f:
+                res = f.read()
+        else:
+            raise e
+    # print("RAW RESPONSE:", res)  # add this to see what came back
+    # print("CANDIDATES:", response.candidates)  # shows tool call vs text
 
 
-    if res is None:
-        print("Gemini returned None — likely made tool calls without final text")
-        print("Full response:", response)
-        return "{}"  # return empty JSON safely
+    # if res is None:
+    #     print("Gemini returned None — likely made tool calls without final text")
+    #     print("Full response:", response)
+    #     return "{}"  # return empty JSON safely
 
 
     res = res.strip()
