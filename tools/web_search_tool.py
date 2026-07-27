@@ -19,7 +19,7 @@ def get_search_results(query: str) -> str:
     try: 
         results = tavily_client.search(
             query=query,
-            max_results = 5,
+            max_results = 2,
             search_depth = "basic"
         )
     except Exception as e:
@@ -35,8 +35,8 @@ def get_search_results(query: str) -> str:
         url = item.get("url", "Unknown")
         content = item.get("content", "No content available.")
 
-        if len(content) > 500:
-            content = content[:500] + "..."
+        if len(content) > 250:
+            content = content[:250] + "..."
         search_data += f"""
             Title : {title}
             URL : {url}
