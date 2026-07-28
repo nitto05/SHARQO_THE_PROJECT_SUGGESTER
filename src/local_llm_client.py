@@ -34,7 +34,7 @@ def query_local_llm(prompt: str, max_tokens: int = 512, temperature: float = 0.1
                 "max_tokens" : max_tokens,
                 "temperature" : temperature
             },
-            timeout = 90
+            timeout = 200
         )
         response.raise_for_status()
         return response.json().get("response", "").strip()
