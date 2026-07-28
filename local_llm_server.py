@@ -37,6 +37,8 @@ def generate_text(req: GenerateRequest):
         text = tokenizer.apply_chat_template(messages, tokenize = False, add_generation_prompt = True)
         inputs = tokenizer([text], return_tensors = "pt").to("cuda")
 
+        print(f"\n [SERVER] PROMPT RECEIVED. INPUT TOKENS COUNT : {inputs.input_ids.shape[1]}")
+
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,

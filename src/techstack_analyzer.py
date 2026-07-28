@@ -305,52 +305,76 @@ Return exactly in this format:
         fin_data ["concepts_p1"] = (res_dict["concepts"]["phase1"])
         fin_data ["concepts_p2"] = (res_dict["concepts"]["phase2"])
 
-        ind_str = ""
-        for keys in fin_data:
-            ind_str += keys + ":" + "\n"
-            for j in fin_data[keys]:
-                ind_str += "\t" + j + "\n"
-        
-        search_context = ""
-        print("\n Queries Tavily web search for techonology precedents...")
+        concepts_p1 = fin_data["concepts_p1"]
+        concepts_p2 = fin_data["concepts_p2"]
+
+        concept_map = {}
+
+        print("\n Starting Phase targeted compatibility loop...")
+
         for tech in fin_data["techstack"]:
-            query = f"{tech} github implementation open source project"
-            search_results = web_search(query)
-            search_context += f"--- Search Results for {tech} --- \n{search_results}\n\n"
+            print(f"\n Analyzing {tech}...")
+            q1_prompt = f"""
+                You are a Search Optimizer. Write a single search query to verify if the technology '{tech}' can implement these Phase 1 concepts:
+                {", ".join(concepts_p1)}
 
-        mapping_prompt = f"""
-                You are a Technical Mentor and Software Architect.
-                I have a list of technologies and theoretical concepts:
-                
-                {ind_str}
-                
-                To verify compatibility, I have scraped the web for reference projects on GitHub combining these tools:
-                {search_context}
-                
-                CRITICAL VERIFICATION RULES:
-                1. VALID RELATIONSHIP ONLY: Read the search context and verify whether the technology can ACTUALLY implement the matched concepts. Reject pairings that do not match real-world tool capabilities.
-                2. GITHUB PRECEDENT: Only map a technology to a concept if the search context confirms there are real repositories on GitHub implementing this concept using this technology.
-                
-                Generate a single JSON dictionary where the keys are the technology names, and the values are lists of exactly 2 lists:
-                - The first list contains Phase 1 concepts implemented by this technology. (Empty list [] if not used in Phase 1).
-                - The second list contains Phase 2 concepts implemented by this technology. (Empty list [] if not used or replaced in Phase 2).
-                
-                Example format:
-                {{
-                "SQLAlchemy": [["SQLite Database"], ["PostgreSQL", "ORM Scaling"]],
-                "Flask": [["RESTful APIs"], []],
-                "Docker": [[], ["Containerization"]]
-                }}
-                
-                Only return the raw JSON dictionary. Do not include markdown code block wraps (```) or explanation text.
-
+                Return ONLY the plain text search query. Do not add quotes, explanations, or markdown.
             """
-        print("\n Mapping tech stack to concepts locally using Qwen (grounded in search)...")
+            query_p1 = query_local_llm(q1_prompt, max_tokens = 32, temperature = 0.1).strip().replace('"', '').replace("'", "")
 
-        qwen_res = query_local_llm(mapping_prompt, max_tokens = 768, temperature = 0.1)
+            results_p1 = web_search(query_p1)
 
-        clean_qwen = qwen_res.replace("```json","").replace("```", "").strip()
-        concept_map = json.loads(clean_qwen)
+            verify_p1_prompt = f"""
+                You are a technical Allocator. Read this search context:
+                {results_p1}
+
+                Determine which of the following Phase 1 concepts can ACTUALLY be implemented by '{tech}' :
+                Target Concepts : {", ".join(concepts_p1)}
+
+                Return a raw JSON list of only the concepts from the target list that are compatible.
+                Example format:
+                ["HTTP/REST", "API Design"]
+                Do not include markdown wraps(```) or explanation text. 
+            """
+            raw_res_p1 = query_local_llm(verify_p1_prompt, max_tokens = 128, temperature = 0.1)
+            try:
+                matched_p1 = json.loads(raw_res_p1.replace("```json", "").replace("```", "").strip())
+            except Exception : 
+                matched_p1 = []
+
+            q2_prompt = f"""
+                You are a Search Optimizer.
+                Write a single search query to verify if the technology '{tech}' can implement these phase 2 concepts:
+                {", ".join(concepts_p2)}
+
+                Return ONLY the plain text search query. Do not add quotes, explanation, or markdown.
+            """
+
+            query_p2 = query_local_llm(q2_prompt, max_tokens = 32, temperature = 0.1).strip().replace('"', '').replace("'", "")
+
+            results_p2 = web_search(query_p2)
+
+            verify_p2_prompt = f"""
+                You are a technical Allocator. Read this search context:
+                {results_p2}
+
+                Determine which of the following Phase 2 concepts can ACTUALLY be implemented by '{tech}' :
+                Target Concepts : {", ".join(concepts_p2)}
+
+                Return a raw JSON list of only the concepts from the target list that are compatible.
+                Example format:
+                ["HTTP/REST", "API Design"]
+                Do not include markdown wraps(```) or explanation text. 
+            """
+            raw_res_p2 = query_local_llm(verify_p2_prompt, max_tokens = 128, temperature = 0.1)
+            try:
+                matched_p2 = json.loads(raw_res_p2.replace("```json", "").replace("```", "").strip())
+            except Exception:
+                matched_p2 = []
+            concept_map [tech] = [matched_p1, matched_p2]
+
+        # clean_qwen = qwen_res.replace("```json","").replace("```", "").strip()
+        # concept_map = json.loads(clean_qwen)
 
         fin_data["mappings"] = concept_map
         ret_dict = dict()

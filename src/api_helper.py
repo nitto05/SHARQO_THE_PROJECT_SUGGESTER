@@ -41,7 +41,7 @@ def safe_generate_json (client, model, prompt, config, llm : str = "gemini") -> 
                     "temperature": temp
                 }
 
-                response = requests.post(LOCAL_SERVER_URL, json = payload, timeout = 90)
+                response = requests.post(LOCAL_SERVER_URL, json = payload, timeout = 200)
                 response.raise_for_status()
 
                 qwen_text = response.json().get("response", "").strip()
