@@ -19,7 +19,7 @@ def get_search_results(query: str) -> str:
     try: 
         results = tavily_client.search(
             query=query,
-            max_results = 2,
+            max_results = 4,
             search_depth = "basic"
         )
     except Exception as e:
