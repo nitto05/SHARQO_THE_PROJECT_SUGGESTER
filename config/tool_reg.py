@@ -327,12 +327,12 @@ TOOL_REGISTRY = {
 }
 }
 
-LOCAL_TOOLS = {
-    "web_search": {
-        "file" : "web_search_tool",
-        "fucntion" : "get_search_rules"
+# LOCAL_TOOLS = {
+#     "web_search": {
+#         "file" : "web_search_tool",
+#         "fucntion" : "get_search_rules"
 
-},
+# },
 
-    "scrape_page" : 
-}
+#     "scrape_page" : 
+# }

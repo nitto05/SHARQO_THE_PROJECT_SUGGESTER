@@ -12,9 +12,16 @@ import os
 import re
 from dotenv import load_dotenv
 from google import genai
-from tool_manager import get_file, get_func,tool_registery
+from tool_manager import get_file, get_func,tool_registry
 from google.genai import types
 from api_helper import safe_generate_json
+import sys
+from pathlib import Path
+
+# Resolve root directory and add it to python path
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT))
+
 
 def clean_term(text:str) -> str:
     """
@@ -25,8 +32,8 @@ def clean_term(text:str) -> str:
     if "(" in text:
         text = text.split("(")[0]
 
-        text = text.replace(",", "").replace("-", "").strip()
-        return re.sub(r'\s+', ' ', text)
+    text = text.replace(",", "").replace("-", "").strip()
+    return re.sub(r'\s+', ' ', text)
 def build_search_queries(services: list, concepts : list, mappings : list) -> dict:
     """
     Statistically constructs tool search queries using python string formatting.
@@ -80,7 +87,7 @@ def execute_single_tool(tool: str, query: str) -> tuple:
     
 def fetch_resources_parallel(queries_dict: dict) -> dict:
     results = {}
-    with concurrent.futures.ThreadPoolExecture() as executor:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
         #submit all tasks
         future_to_task = {
             executor.submit(execute_single_tool, tool, query): (category, item, tool)
@@ -148,6 +155,52 @@ def generate_study_guide(goal:str, retrieved_data: dict) -> str:
             return f"Cloud synthesis failed ({e}). Returning raw links: \n {formatted_data}"
 
 
+if __name__ == "__main__":
+    load_dotenv()
+    
+    # 1. Simple hardcoded test targets
+    services = ["redis"]
+    concepts = ["no-sql database"]
+    mappings = [("redis", "no-sql database")]
+    goal = "redis implementing no-sql database"
+
+    print(f"\n🎯 Running Test Target:")
+    print(f"   Service: {services[0]}")
+    print(f"   Concept: {concepts[0]}")
+
+    start_time = time.time()
+    
+    # 2. Build queries using deterministic Python function
+    queries = build_search_queries(services, concepts, mappings)
+    for (cat, item, tool), q_str in queries.items():
+        print(f"   -> [{tool}] Query: '{q_str}'")
+        
+    # 3. Run parallel workers
+    print(f"\n🚀 Launching parallel API worker threads...")
+    retrieved_data = fetch_resources_parallel(queries)
+
+        # Print the raw retrieved data to see the links directly on your terminal
+        # 3. Print only the clickable URLs to keep the console clean
+    print("\n🔗 Retrieved Links & Data:")
+    for (cat, item, tool), content in retrieved_data.items():
+        # Find all HTTP/HTTPS links inside the text snippet
+        urls = re.findall(r'https?://[^\s\)]+', content)
+        
+        if urls:
+            print(f"\n================ [{tool}] {item} ================")
+            for url in urls:
+                print(f"   -> {url}")
+
+
+    
+    # 4. Generate summary guide via safe Gemini client
+    print("\n📚 Generating final learning path summary via Gemini...")
+    roadmap_summary = generate_study_guide(goal, retrieved_data)
+    
+    print("\n ==== FINAL ANALYSIS ==== \n")
+    print(roadmap_summary)
+        
+    print(f"\n⏱️ Completed in {time.time() - start_time:.2f} seconds")
 
 
 
